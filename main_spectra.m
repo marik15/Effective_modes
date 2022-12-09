@@ -1,9 +1,9 @@
 % Программа строит Фурье и вейвлет-спектры и сохраняет в папку
 
 filename = 'C:\MATLAB\Эффективные моды\w3_4.irc';  %  файл
+modes = [1];  %  интересующие моды, диапазон можно задать так, например: 1:10
 t1 = {1:250:751};  %  начала траекторий - набор целых чисел
 t2 = {250:250:1000};  %  концы траектории - набор целых чисел: размерности t1 и t2 равны
-modes = [1];  %  интересующие моды, диапазон можно задать так, например: 1:10
 xlimit = 4000;  %  верхняя граница по частоте, см-1, задаётся апостериори
 
 fs = 2E+15;  %  частота дискретизации (сколько раз в секунду пишется: половина фемтосекунды)
@@ -25,11 +25,11 @@ graph_freq_P1 = cell(0);
 graph_sum_wavelet = cell(0);
 
 for mode_id = modes
-    for t = 1:numel(t1)
-        if (isa(t2{t}, 'char'))
-            x = t1{t}:size(U, 1);
+    for t = 1:numel(t1{1})
+        if (isa(t2{1}(t), 'char'))
+            x = t1{1}(t):size(U, 1);
         else
-            x = t1{t}:t2{t};
+            x = t1{1}(t):t2{1}(t);
         end
         fig = figure('units', 'normalized', 'outerposition', [0 0 1 1], 'color', 'w');
         ax_signal = axes(fig);
@@ -109,20 +109,20 @@ for mode_id = modes
     ylabel(ax, 'An absolute value of the Fourier transform', 'FontSize', 14);
     xlim(ax, [0, xlimit]);
     hold(ax, 'on');
-    for t = 1:numel(t1)
-        if (isa(t2{t}, 'char'))
+    for t = 1:numel(t1{1})
+        if (isa(t2{1}(t), 'char'))
             tmpt2 = size(U, 1);
         else
-            tmpt2 = t2{t};
+            tmpt2 = t2{1}(t);
         end
         p(t) = plot(ax, graph_freq_P1{mode_id, t}(:, 1), graph_freq_P1{mode_id, t}(:, 2));
-        str{t} = ['От ' num2str(t1{t}), ' до ', num2str(tmpt2)];
-        file_ID_fft = fopen([output_path, 'Мода №', num2str(mode_id), ', время от ', num2str(t1{t}), ' до ', num2str(tmpt2), ' график Фурье для Origin.txt'], 'w');
+        str{t} = ['От ' num2str(t1{1}(t)), ' до ', num2str(tmpt2)];
+        file_ID_fft = fopen([output_path, 'Мода №', num2str(mode_id), ', время от ', num2str(t1{1}(t)), ' до ', num2str(tmpt2), ' график Фурье для Origin.txt'], 'w');
         for i = 1:size(graph_freq_P1{mode_id, t}, 1)
             fprintf(file_ID_fft, '%.10E %.10E\n', graph_freq_P1{mode_id, t}(i, 1), graph_freq_P1{mode_id, t}(i, 2));
         end
         fclose(file_ID_fft);
-        file_ID_wavelet = fopen([output_path, 'Мода №', num2str(mode_id), ', время от ', num2str(t1{t}), ' до ', num2str(tmpt2), ' график вейвлет для Origin.txt'], 'w');
+        file_ID_wavelet = fopen([output_path, 'Мода №', num2str(mode_id), ', время от ', num2str(t1{1}(t)), ' до ', num2str(tmpt2), ' график вейвлет для Origin.txt'], 'w');
         for i = size(graph_sum_wavelet{mode_id, t}, 1):-1:1
             fprintf(file_ID_wavelet, '%.10E %.10E\n', graph_sum_wavelet{mode_id, t}(i, 1), graph_sum_wavelet{mode_id, t}(i, 2));
         end
