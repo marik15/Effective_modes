@@ -18,7 +18,7 @@ for file_id = 1:numel(files)
     for i = 1:N
         q(i) = qVxyz(1, 4*i-3);
     end
-    if (isa(t2, 'double') && (t2-t1+1 < 3*N))
+    if (isa(t2, 'double') && (t2-t1+1 < 3*N))  %#ok<BDSCI>
         fprintf('\t%s\n\t%s\n\n', 'Внимание!', 'Длина интервала [t1; t2] меньше числа степеней свободы!');
     end
     const = 0.529177;  %  переводим боры в ангстремы

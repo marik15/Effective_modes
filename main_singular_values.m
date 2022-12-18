@@ -31,6 +31,7 @@ for k = 1:numel(files)
     xlabel(ax, 'Ќомер сингул€рного числа', 'FontSize', 14);
     ylabel(ax, '«начение сингул€рного числа', 'FontSize', 14);
     saveas(fig, [output_path, '√рафик svd дл€ ', files{k}, '.jpg']);
+    close(fig);
     writematrix(s, [output_path, '„исла svd дл€ ' files{k} '.txt'], 'Delimiter', 'space');  %  запись сингул€рных значений в текстовый файл
 end
 
