@@ -1,4 +1,4 @@
-function draw_overlap_video(A, L, diff, step, path)
+function draw_overlap_video(A, L, diff, step, path, name)
     N = size(A, 2)/3;
     fig = figure('Color', 'w', 'WindowState', 'maximized');
     ax = axes(fig);
@@ -13,7 +13,7 @@ function draw_overlap_video(A, L, diff, step, path)
     xlabel(ax, 'Номер сингулярного вектора первого интервала');
     ylabel(ax, 'Номер сингулярного вектора второго интервала');
 
-    video_filename = append(path, 'video ', string(datetime(now, 'ConvertFrom', 'datenum', 'Format', 'yyyy-MM-dd HH-mm-ss')), '.mp4');
+    video_filename = append(path, name, ' video ', string(datetime(now, 'ConvertFrom', 'datenum', 'Format', 'yyyy-MM-dd HH-mm-ss')), '.mp4');
     output_Video = VideoWriter(video_filename, 'MPEG-4');  %  раскомментировать всё для создания видео
     output_Video.FrameRate = 1;  %  кадров в секунду
     open(output_Video);
