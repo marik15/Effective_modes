@@ -1,12 +1,12 @@
 % Программа создаёт .txt-файл для подачи в визуализатор ChemCraft
 
 path = 'C:\MATLAB\Эффективные моды\';  %  папка с файлами, в конце символ \
-files = {'w3_1.irc';
-        'w4_1.irc';
-        'w4_2.irc'};  %  имена файлов
+files = {'w3_1.irc'};
+        %'w4_1.irc';
+        %'w4_2.irc'};  %  имена файлов
 L = 4000;  %  длина интервала в отсчетах, по которому считаем вектор
 diff = 4000;  %  расстояние между началами первого и второго интервалов
-step = 4000;  %  шаг, с которым просматриваем траекторию
+step = 20000;  %  шаг, с которым просматриваем траекторию
 
 % --- ниже не нужно редактировать
 
@@ -61,5 +61,10 @@ for k = 1:numel(files)
     if (~isfolder(path_video))
         mkdir(path_video);  %  создание папки с видео
     end
-    draw_overlap_video(A, L, diff, step, path_video, name);
+    draw_overlap_video(abs(A), L, diff, step, path_video, name);
+    path_matrix = append(path, 'Матрицы\');
+    if (~isfolder(path_matrix))
+        mkdir(path_matrix);  %  создание папки с таблицами
+    end
+    write_overlap_matrix(abs(A), L, diff, step, path_matrix, name);
 end
