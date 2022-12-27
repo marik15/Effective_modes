@@ -62,13 +62,13 @@ function write_wx_for_visualizer(sample, q, xyz, N, U, s, V, fs, output_path)
     fclose(file);
 
     REDUCED_MASS = '    REDUCED MASS:      0.00000     0.00000     0.00000     0.00000     0.00000';
-    Step = 5;  %  максимальное число столбцов
+    step = 5;  %  максимальное число столбцов
     M = size(s, 1);
-    for block = 1:Step:M
+    for mode = 1:step:M
         fprintf(file2, '\n');  %  пустая строка
 
-        Flag = (block+Step <= M);  %  если надо Step столбцов, то true, иначе false
-        L = Flag*Step + (~Flag)*(M-block+1);  %  текущее число столбцов
+        Flag = (mode+step <= M);  %  если надо step столбцов, то true, иначе - false
+        L = Flag*step + (~Flag)*(M-mode+1);  %  текущее число столбцов
         format_n = '';
         format_fr = '';
         format_ir = '';
@@ -80,16 +80,16 @@ function write_wx_for_visualizer(sample, q, xyz, N, U, s, V, fs, output_path)
             format_svd = [format_svd, '%12.8f'];  %#ok<AGROW>
         end
 
-        fprintf(file2, [sprintf(['%15s', format_n], '', block:block+L-1) '\n']);  %  номер блока
+        fprintf(file2, [sprintf(['%15s', format_n], '', mode:mode+L-1) '\n']);  %  номер блока
         freqs = zeros(1, L);
         for i = 1:L
-            [freq, P1] = fourier_transform(U(:, block+i-1)', fs);
+            [freq, P1] = fourier_transform(U(:, mode+i-1)', fs);
             freqs(1, i) = get_main_freq(freq, P1);
         end
         freqs = freqs/3E+10;  %  частота в обратных сантиметрах
         fprintf(file2, ['       FREQUENCY:   ', sprintf(format_fr, freqs), '\n']);  %  FREQUENCY
         fprintf(file2, [REDUCED_MASS(1:18+12*L), '\n']);
-        fprintf(file2, ['    IR INTENSITY: ', sprintf(format_ir, s(block:block+L-1)), '\n']);
+        fprintf(file2, ['    IR INTENSITY: ', sprintf(format_ir, s(mode:mode+L-1)), '\n']);
         fprintf(file2, '\n');
 
         for atom = 1:N
@@ -100,10 +100,10 @@ function write_wx_for_visualizer(sample, q, xyz, N, U, s, V, fs, output_path)
                 else
                     fprintf(file2, '%19s', '');
                 end
-                fprintf(file2, [sprintf(['%s', format_svd], comp, V(3*(atom-1)+(comp-'X')+1, block:block+L-1)) '\n']);
+                fprintf(file2, [sprintf(['%s', format_svd], comp, V(3*(atom-1)+(comp-'X')+1, mode:mode+L-1)) '\n']);
             end
         end
-        if (M - block < Step)
+        if (M - mode < step)
             fprintf(file2, '\n\n\n');
         end
         for i = 0:1

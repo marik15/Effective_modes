@@ -1,8 +1,8 @@
-function write_overlap_matrix(A, L, diff, step, path, name)
+function write_overlap_matrix(A, start_arr, end_arr, path, name)
     N = size(A, 2)/3;
     for t = 1:size(A, 1)
         image = reshape(A(t, :, :), 3*N, 3*N);
-        matrix_filename = append(path, name, ' Интервал [', num2str((t-1)*step+1), '; ', num2str((t-1)*step+L), '] и [', num2str((t-1)*step+1+diff), '; ', num2str((t-1)*step+1+diff+L), '].txt');
+        matrix_filename = append(path, name, ' Интервал [', num2str(start_arr(t)), '; ', num2str(end_arr(t)), '] и [', num2str(start_arr(t+1)), '; ', num2str(end_arr(t+1)), '].txt');
         file = fopen(matrix_filename, 'w');
         for h = 1:3*N
             for w = 1:3*N

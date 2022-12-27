@@ -1,12 +1,10 @@
-% Программа создаёт .txt-файл для подачи в визуализатор ChemCraft
+% Программа создаёт видеоанимацию (пока убрано) и .txt-файл с матрицами перекрываний
 
 path = 'C:\MATLAB\Эффективные моды\';  %  папка с файлами, в конце символ \
-files = {'w3_1.irc'};
-        %'w4_1.irc';
-        %'w4_2.irc'};  %  имена файлов
+files = {'w5_4long.irc'};  %  имена файлов
 L = 4000;  %  длина интервала в отсчетах, по которому считаем вектор
-diff = 4000;  %  расстояние между началами первого и второго интервалов
-step = 20000;  %  шаг, с которым просматриваем траекторию
+start_arr = [1, 4001, 40001, 56001, 60001, 64001, 68001, 80001, 120001, 140001, 160001];  %  массив начал
+end_arr = start_arr + L - 1;  %  массив концов
 
 % --- ниже не нужно редактировать
 
@@ -45,11 +43,11 @@ for k = 1:numel(files)
         N = size(E12, 2)/3;
     end
 
-    T = fix(1 + (length(E12)-(diff+L+1))/step);
+    T = numel(start_arr) - 1;
     A = zeros(T, 3*N, 3*N);
     for t = 1:T
-        [~, ~, V1] = svd(E12((t-1)*step+1:(t-1)*step+L, :), 0);
-        [~, ~, V2] = svd(E12((t-1)*step+1+diff:(t-1)*step+1+diff+L, :), 0);
+        [~, ~, V1] = svd(E12(start_arr(t):end_arr(t), :), 0);
+        [~, ~, V2] = svd(E12(start_arr(t+1):end_arr(t+1), :), 0);
         for e1 = 1:3*N
             for e2 = 1:3*N
                 A(t, e1, e2) = dot(V1(:, e1), V2(:, e2));
@@ -57,14 +55,16 @@ for k = 1:numel(files)
         end
     end
 
+    %{
     path_video = append(path, 'Видео\');
     if (~isfolder(path_video))
         mkdir(path_video);  %  создание папки с видео
     end
-    draw_overlap_video(abs(A), L, diff, step, path_video, name);
+    draw_overlap_video(abs(A), start_arr, end_arr, path_video, name);
+    %}
     path_matrix = append(path, 'Матрицы\');
     if (~isfolder(path_matrix))
         mkdir(path_matrix);  %  создание папки с таблицами
     end
-    write_overlap_matrix(abs(A), L, diff, step, path_matrix, name);
+    write_overlap_matrix(abs(A), start_arr, end_arr, path_matrix, name);
 end

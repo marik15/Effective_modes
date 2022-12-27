@@ -1,4 +1,4 @@
-function draw_overlap_video(A, L, diff, step, path, name)
+function draw_overlap_video(A, start_arr, end_arr, path, name)
     N = size(A, 2)/3;
     fig = figure('Color', 'w', 'WindowState', 'maximized');
     ax = axes(fig);
@@ -21,13 +21,13 @@ function draw_overlap_video(A, L, diff, step, path, name)
     t = 1;
     image = reshape(A(t, :, :), 3*N, 3*N);
     s = surf(ax, image, 'EdgeColor', 'None');
-    title(ax, append('Интеграл перекрываний участков [', num2str((t-1)*step+1), '; ', num2str((t-1)*step+L), '] и [', num2str((t-1)*step+1+diff), '; ', num2str((t-1)*step+1+diff+L), ']'));
+    title(ax, append('Интеграл перекрываний участков [', num2str(start_arr(1)), '; ', num2str(end_arr(1)), '] и [', num2str(start_arr(2)), '; ', num2str(end_arr(2)), ']'));
     writeVideo(output_Video, getframe(fig));
 
     for t = 2:size(A, 1)
         image = reshape(A(t, :, :), 3*N, 3*N);
         set(s, 'ZData', image);
-        ax.Title.String = append('Интеграл перекрываний участков [', num2str((t-1)*step+1), '; ', num2str((t-1)*step+L), '] и [', num2str((t-1)*step+1+diff), '; ', num2str((t-1)*step+1+diff+L), ']');
+        ax.Title.String = append('Интеграл перекрываний участков [', num2str(start_arr(t)), '; ', num2str(end_arr(t)), '] и [', num2str(start_arr(t+1)), '; ', num2str(end_arr(t+1)), ']');
         writeVideo(output_Video, getframe(fig));
     end
     close(output_Video);
