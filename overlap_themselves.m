@@ -66,5 +66,5 @@ for k = 1:numel(files)
     if (~isfolder(path_matrix))
         mkdir(path_matrix);  %  создание папки с таблицами
     end
-    write_overlap_matrix(abs(A), start_arr, end_arr, path_matrix, name);
+    write_overlap_matrix_themselves(abs(A), start_arr, end_arr, path_matrix, name);
 end

@@ -1,3 +1,5 @@
+% Выводит график вейвлет-спектра сигнала с заданной частотой дискретизации
+
 function fig = wavelet_transform(U, fs, i)
     [cfs, frq] = cwt(U(:, i), fs);
     frq = frq/3E10;

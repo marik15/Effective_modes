@@ -1,3 +1,5 @@
+% Считывает нормальные моды из mp2-файлов
+
 function A = read_modes(filename)
     file = fopen(filename, 'r');
     flag = true;
