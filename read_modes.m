@@ -1,11 +1,11 @@
-% Считывает нормальные моды из mp2-файлов
+% Считывает нормальные моды из mp2-файла
 
 function A = read_modes(filename)
     file = fopen(filename, 'r');
     flag = true;
     while ((~feof(file)) && (flag))
         line = fgetl(file);
-        block_index = regexp(line, 'NORMAL COORDINATE ANALYSIS IN THE HARMONIC APPROXIMATION', 'once');
+        block_index = regexp(line, 'NORMAL COORDINATE ANALYSIS IN THE HARMONIC APPROXIMATION', 'once');  %  поиск строки в файле, которая содержит данную подстроку
         if (~isempty(block_index))
             flag = false;
         end

@@ -1,7 +1,9 @@
+% Создает вспомогательный бинарный (.mat) файл для ускорения при последующих запусках
+
 function save_U(filename, outputname)
-    [N, qVxyz, xyz] = get_matrices(filename, 1, 'end');  %  считываем данные из .irc
+    [n, qVxyz, xyz] = get_matrices(filename, 1, 'end');  %  считываем данные из .irc
     const = 0.529177;  %  переводим боры в ангстремы
-    for i = 1:N
+    for i = 1:n
         qVxyz(:, 4*i-2:4*i) = qVxyz(:, 4*i-2:4*i)*const;
     end
     xyz = xyz*const;

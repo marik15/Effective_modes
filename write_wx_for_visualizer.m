@@ -1,5 +1,6 @@
-% Меняет данные файла wx.sample для подачи в программу-визуализатор
-function write_wx_for_visualizer(sample, q, xyz, N, U, s, V, fs, output_path)
+% Записывает данные в файл по шаблону wx.sample для подачи в программу-визуализатор ChemCraft
+
+function write_wx_for_visualizer(sample, q, xyz, n, U, s, V, fs, output_path)
     file = fopen(sample, 'r');
     %output_file = append(output_path, 'output ', string(datetime(now, 'ConvertFrom', 'datenum', 'Format', 'yyyy-MM-dd HH-mm-ss')), '.txt');
     output_file = [output_path, 'output.txt'];
@@ -7,12 +8,12 @@ function write_wx_for_visualizer(sample, q, xyz, N, U, s, V, fs, output_path)
     for str_i = 1:34  %  копирование до координат, не включая их
         fprintf(file2, [insertAfter(fgetl(file), "%", "%"), '\n']);
     end
-    atom_names = repmat({''}, N, 1);
+    atom_names = repmat({''}, n, 1);
     const = 0.529177;
     for str_i = 35:46
         line = fgetl(file);  %  пропуск первых 12 строк
     end
-    for strout_i = 1:N  %  вставка средних координат в Борах
+    for strout_i = 1:n  %  вставка средних координат в Борах
         x = mean(xyz(:, 3*strout_i-2))/const;
         y = mean(xyz(:, 3*strout_i-1))/const;
         z = mean(xyz(:, 3*strout_i))/const;
@@ -22,14 +23,14 @@ function write_wx_for_visualizer(sample, q, xyz, N, U, s, V, fs, output_path)
     fgetl(file);
     fprintf(file2, '\n');
     fgetl(file);
-    fprintf(file2, [' TOTAL NUMBER OF ATOMS               =   ', sprintf('%d', N), '\n']);  %  TOTAL NUMBER OF ATOMS
+    fprintf(file2, [' TOTAL NUMBER OF ATOMS               =   ', sprintf('%d', n), '\n']);  %  TOTAL NUMBER OF ATOMS
     for str_i = 49:52  %  копирование включая линию тире
         fprintf(file2, [fgetl(file), '\n']);
     end
     for str_i = 53:64
         line = fgetl(file);  %  пропуск вторых 12 строк
     end
-    for strout_i = 1:N  %  вставка средних координат в ангстремах
+    for strout_i = 1:n  %  вставка средних координат в ангстремах
         x = mean(xyz(:, 3*strout_i-2));
         y = mean(xyz(:, 3*strout_i-1));
         z = mean(xyz(:, 3*strout_i));
@@ -41,7 +42,7 @@ function write_wx_for_visualizer(sample, q, xyz, N, U, s, V, fs, output_path)
     for str_i = 72:83
         line = fgetl(file);  %  пропуск третьих 12 строк
     end
-    for strout_i = 1:N  %  вставка аббревиатур и масс
+    for strout_i = 1:n  %  вставка аббревиатур и масс
         m = q(strout_i);
         if (m == 8)
             m = 16;
@@ -92,7 +93,7 @@ function write_wx_for_visualizer(sample, q, xyz, N, U, s, V, fs, output_path)
         fprintf(file2, ['    IR INTENSITY: ', sprintf(format_ir, s(mode:mode+L-1)), '\n']);
         fprintf(file2, '\n');
 
-        for atom = 1:N
+        for atom = 1:n
             for comp = 'X':'Z'
                 if (comp == 'X')
                     k = length(atom_names{strout_i, 1});

@@ -1,4 +1,4 @@
-% Программа создаёт видеоанимацию (пока убрано) и .txt-файл с матрицами перекрываний
+% Создаёт видеоанимацию (пока убрано) и .txt-файл с матрицами перекрываний
 
 path = 'C:\MATLAB\Эффективные моды\';  %  папка с irc-файлами, в конце символ \
 files = {'w5_4long.irc'};  %  имена файлов
@@ -28,10 +28,10 @@ for k = 1:numel(files)
     E12_filename = append(output_path_E12, name, '_E12.mat');
 
     if (~isfile(E12_filename))
-        [N, qVxyz, ~] = get_matrices(filename, t1, t2);  %  считываем данные из .irc
+        [n, qVxyz, ~] = get_matrices(filename, t1, t2);  %  считываем данные из .irc
 
         const = 0.529177;  %  переводим боры в ангстремы
-        for i = 1:N
+        for i = 1:n
             qVxyz(:, 4*i-2:4*i) = qVxyz(:, 4*i-2:4*i)*const;
         end
 
@@ -40,16 +40,16 @@ for k = 1:numel(files)
         fprintf('\t%s\n\t%s\n\t%s\n', datestr(datetime(now, 'ConvertFrom', 'datenum')), 'Файл для ускорения записан по адресу:', E12_filename);
     else
         load(E12_filename);
-        N = size(E12, 2)/3;
+        n = size(E12, 2)/3;
     end
 
     T = numel(start_arr) - 1;
-    A = zeros(T, 3*N, 3*N);
+    A = zeros(T, 3*n, 3*n);
     for t = 1:T
         [~, ~, V1] = svd(E12(start_arr(t):end_arr(t), :), 0);
         [~, ~, V2] = svd(E12(start_arr(t+1):end_arr(t+1), :), 0);
-        for e1 = 1:3*N
-            for e2 = 1:3*N
+        for e1 = 1:3*n
+            for e2 = 1:3*n
                 A(t, e1, e2) = dot(V1(:, e1), V2(:, e2));
             end
         end

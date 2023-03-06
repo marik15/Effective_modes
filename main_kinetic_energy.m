@@ -1,4 +1,4 @@
-% Программа вычисляет среднюю кинетическую энергию, указанную в шапке .irc-файла
+% Вычисляет среднюю кинетическую энергию, указанную в шапке .irc-файла
 
 path = 'C:\MATLAB\Эффективные моды\';  %  папка с файлами, в конце символ \
 files = {%'w4_1.irc';
@@ -23,7 +23,7 @@ end
 for k = 1:size(files, 1)
     filename = files{k};
 
-    N = count_n([path, filename]);  %  число частиц
+    n = count_n([path, filename]);  %  число частиц
     file = fopen([path, filename]);
     t = 0;  %  номер измерения
     energy = zeros(1, 1);  %  массив энергий
@@ -37,7 +37,7 @@ for k = 1:size(files, 1)
         line = line(11:end);  %  убираем значение TIME
         values = str2num(line);  %#ok<ST2NM>
         energy(t, 1) = values(1);  %  энергия из строчки
-        for j = 1:N+2
+        for j = 1:n+2
             [~] = fgetl(file);
         end
     end

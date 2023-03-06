@@ -1,4 +1,5 @@
-% --- Вычисляет быстрое преобразование Фурье
+% Вычисляет быстрое преобразование Фурье (fft)
+
 function [freq, P1] = fourier_transform(sig, fs)
     Y = fft(sig);
     L = size(sig, 2);

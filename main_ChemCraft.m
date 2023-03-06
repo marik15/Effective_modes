@@ -1,4 +1,4 @@
-% Программа создаёт .txt-файл для подачи в визуализатор ChemCraft
+% Создаёт .txt-файл для подачи в программу-визуализатор ChemCraft
 
 path = 'C:\MATLAB\Эффективные моды\';  %  папка с файлами, в конце символ \
 files = {'w3_1.irc'};  %  имена файлов
@@ -13,16 +13,16 @@ sample = [cd, '\wx.sample'];
 
 for file_id = 1:numel(files)
     filename = [path, files{file_id}];
-    [N, qVxyz, xyz] = get_matrices(filename, t1, t2);  %  считываем данные из .irc
-    q = zeros(N, 1);
-    for i = 1:N
+    [n, qVxyz, xyz] = get_matrices(filename, t1, t2);  %  считываем данные из .irc
+    q = zeros(n, 1);
+    for i = 1:n
         q(i) = qVxyz(1, 4*i-3);
     end
-    if (isa(t2, 'double') && (t2-t1+1 < 3*N))  %#ok<BDSCI>
+    if (isa(t2, 'double') && (t2-t1+1 < 3*n))  %#ok<BDSCI>
         fprintf('\t%s\n\t%s\n\n', 'Внимание!', 'Длина интервала [t1; t2] меньше числа степеней свободы!');
     end
     const = 0.529177;  %  переводим боры в ангстремы
-    for i = 1:N
+    for i = 1:n
         qVxyz(:, 4*i-2:4*i) = qVxyz(:, 4*i-2:4*i)*const;
     end
     xyz = xyz*const;
@@ -44,5 +44,5 @@ for file_id = 1:numel(files)
         save([output_path_U, name, '_U.mat'], 'U');  %  сохранение данных для ускорения
         fprintf('\t%s\n\t%s\n\t%s\n', datestr(datetime(now, 'ConvertFrom', 'datenum')), 'Файл для ускорения записан по адресу:', [output_path_U, name, '_U.mat']);
     end
-    write_wx_for_visualizer(sample, q, xyz, N, U, diag(S), V, fs, output_path);  %  запись в файл
+    write_wx_for_visualizer(sample, q, xyz, n, U, diag(S), V, fs, output_path);  %  запись в файл
 end

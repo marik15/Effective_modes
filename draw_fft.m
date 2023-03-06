@@ -1,3 +1,5 @@
+% Выводит график преобразования Фурье (fft)
+
 function fig = draw_fft(U, K, fs)
     fig = figure('units', 'normalized', 'outerposition', [0 0 1 1], 'color', 'w');
     [freq, P1] = fourier_transform(U(1:80001, K)', fs);

@@ -1,4 +1,4 @@
-% ѕрограмма вычисл€ет сингул€рные числа и строит график от пор€дкового номера
+% ¬ычисл€ет и строит график сингул€рных чисел от пор€дкового номера
 
 path = 'C:\MATLAB\Ёффективные моды\';  %  папка с файлами, в конце символ \
 files = {'w3_4.irc'};  %  имена файлов
@@ -15,7 +15,7 @@ end
 for k = 1:numel(files)
     filename = [path, files{k}];
 
-    [N, qVxyz, ~] = get_matrices(filename, t1, t2);  %  считываем данные из .irc
+    [n, qVxyz, ~] = get_matrices(filename, t1, t2);  %  считываем данные из .irc
     E12 = sqrt_energy(qVxyz);
     s = svd(E12);  %  сингул€рные числа в пор€дке убывани€
 
@@ -26,7 +26,7 @@ for k = 1:numel(files)
     fig = figure('units', 'normalized', 'outerposition', [0, 0, 1, 1], 'color', 'w');
     ax = axes(fig);
     plot(ax, s);  %  построение графика
-    xlim(ax, [1, 3*N]);
+    xlim(ax, [1, 3*n]);
     title(ax, ['¬еличина сингул€рных чисел от их номера дл€ файла ', files{k}], 'FontSize', 16, 'Interpreter', 'none');
     xlabel(ax, 'Ќомер сингул€рного числа', 'FontSize', 14);
     ylabel(ax, '«начение сингул€рного числа', 'FontSize', 14);
