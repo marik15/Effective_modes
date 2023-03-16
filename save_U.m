@@ -6,7 +6,7 @@ function save_U(filename, outputname)
     for i = 1:n
         qVxyz(:, 4*i-2:4*i) = qVxyz(:, 4*i-2:4*i)*const;
     end
-    xyz = xyz*const;
+    xyz = xyz*const;  %#ok<NASGU>
     E12 = sqrt_energy(qVxyz);  %  считаем квадратный корень из матрицы
     [U, ~, ~] = svd(E12, 0);
     save(outputname, 'U');
