@@ -1,4 +1,4 @@
-% Возвращает матрицу вида [q1 Vx1 Vy1 Vz1 q2 Vx2 Vy2 Vz2...] от t1 до t2
+% Возвращает по файлу n, матрицу вида [q1, Vx1, Vy1, Vz1, q2, Vx2, Vy2, Vz2,...] и [x1, y1, z1, x2, y2, z2,...] от t1 до t2
 
 function [n, qVxyz, xyz] = get_matrices(filename, t1, t2)
     n = count_n(filename);  %  число частиц, файл типа .irc

@@ -44,9 +44,7 @@ function write_wx_for_visualizer(sample, q, xyz, n, U, s, V, fs, output_path)
     end
     for strout_i = 1:n  %  вставка аббревиатур и масс
         m = q(strout_i);
-        if (m == 8)
-            m = 16;
-        end
+        m = mass_by_charge(m);
         k = length(atom_names{strout_i, 1});
         fprintf(file2, ['%5s%', num2str(k), 's%', num2str(25-k), '.5f\n'], '', atom_names{strout_i, 1}, m);
     end

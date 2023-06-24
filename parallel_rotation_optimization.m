@@ -41,11 +41,7 @@ for k = 1:numel(files)
     
     mxyz_filename = append(output_path, name, '_xyz.mat');
     if (~isfile(mxyz_filename))
-        [n, qVxyz, xyz_cell] = get_matrices(filename, 1, 'end');  %  считываем данные из .irc
-        const = 0.529177;  %  переводим боры в ангстремы
-        for i = 1:n
-            qVxyz(:, 4*i-2:4*i) = qVxyz(:, 4*i-2:4*i)*const;
-        end
+        [n, qVxyz, xyz] = get_n_qVxyz_xyz(filename);
         m = get_mass(qVxyz);
         save(mxyz_filename, 'm', 'xyz');
         fprintf('\t%s\n\t%s\n\t%s\n', datestr(datetime(now, 'ConvertFrom', 'datenum')), 'Файл для ускорения записан по адресу:', mxyz_filename);

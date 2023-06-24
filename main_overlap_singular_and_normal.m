@@ -50,11 +50,7 @@ for k = 1:numel(files)
         mkdir(output_path_E12);  %  создание папки с вспомогательными файлами
     end
 
-    [n, qVxyz, xyz] = get_matrices(filename, t1, t2);  %  считываем данные из .irc
-    const = 0.529177;  %  переводим боры в ангстремы
-    for i = 1:n
-        qVxyz(:, 4*i-2:4*i) = qVxyz(:, 4*i-2:4*i)*const;
-    end
+    [n, qVxyz, ~] = get_n_qVxyz_xyz(filename);
 
     E12_filename = append(output_path_E12, name, '_E12.mat');
     if (~isfile(E12_filename))

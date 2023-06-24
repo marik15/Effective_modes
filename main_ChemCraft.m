@@ -13,36 +13,31 @@ sample = [cd, '\wx.sample'];
 
 for file_id = 1:numel(files)
     filename = [path, files{file_id}];
-    [n, qVxyz, xyz] = get_matrices(filename, t1, t2);  %  считываем данные из .irc
+    [n, qVxyz, xyz] = get_n_qVxyz_xyz(filename);
     q = zeros(n, 1);
-    for i = 1:n
-        q(i) = qVxyz(1, 4*i-3);
+    for atom = 1:n
+        q(atom) = qVxyz(1, 4*atom-3);
     end
     if (isa(t2, 'double') && (t2-t1+1 < 3*n))  %#ok<BDSCI>
         fprintf('\t%s\n\t%s\n\n', 'Внимание!', 'Длина интервала [t1; t2] меньше числа степеней свободы!');
     end
-    const = 0.529177;  %  переводим боры в ангстремы
-    for i = 1:n
-        qVxyz(:, 4*i-2:4*i) = qVxyz(:, 4*i-2:4*i)*const;
-    end
-    xyz = xyz*const;
 
     E12 = sqrt_energy(qVxyz);  %  вычисляем квадратный корень из матрицы
     [U, S, V] = svd(E12, 0);
 
     [~, name, ~] = fileparts(filename);
-    output_path = [path, 'Результаты ', name, '\'];
+    output_path = [path, 'Результаты\', name, '\'];
     if (~isfolder(output_path))
         mkdir(output_path);  %  создание папки с результатами
     end
 
-    output_path_U = [path, 'Вспомогательные U-файлы\'];
+    output_path_U = append(path, 'Вспомогательные файлы\', name, '\');
     if (~isfolder(output_path_U))
         mkdir(output_path_U);  %  создание папки с вспомогательными файлами
     end
     if (~isfile([output_path_U, name, '_U.mat']))
         save([output_path_U, name, '_U.mat'], 'U');  %  сохранение данных для ускорения
-        fprintf('\t%s\n\t%s\n\t%s\n', datestr(datetime(now, 'ConvertFrom', 'datenum')), 'Файл для ускорения записан по адресу:', [output_path_U, name, '_U.mat']);
+        fprintf('\t%s\n\t%s\n\t%s\n', datestr(datetime(now, 'ConvertFrom', 'datenum')), 'Файл для ускорения записан по адресу:', append(output_path_U, name, '_U.mat'));
     end
     write_wx_for_visualizer(sample, q, xyz, n, U, diag(S), V, fs, output_path);  %  запись в файл
 end

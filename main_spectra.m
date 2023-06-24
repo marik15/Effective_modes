@@ -11,12 +11,13 @@ fs = 2E+15;  %  частота дискретизации (сколько раз
 % --- ниже не нужно редактировать
 
 [filepath, name, ~] = fileparts(filename);
-if (~isfile([name, '_U.mat']))
-    save_U(filename, [name, '_U.mat']);  %  сохранение данных для ускорения
+U_path = append('C:\MATLAB\Эффективные моды\Вспомогательные файлы\', name, '\');
+if (~isfile(append(U_path, name, '_U.mat')))
+    save_U(filename, append(U_path, name, '_U.mat'));  %  сохранение данных для ускорения
 end
-load([name, '_U.mat']);  %  загрузка файла
+load(append(U_path, name, '_U.mat'));  %  загрузка U-файла
 
-output_path = [filepath, '\Результаты Фурье и вейвлеты ', name, '\'];
+output_path = append(filepath, '\Результаты Фурье и вейвлеты\', name, '\');
 if (~isfolder(output_path))
     mkdir(output_path);  %  создание папки с результатами
 end
@@ -31,7 +32,7 @@ for mode_id = modes
         else
             x = t1{1}(t):t2{1}(t);
         end
-        fig = figure('units', 'normalized', 'outerposition', [0 0 1 1], 'color', 'w');
+        fig = figure('units', 'normalized', 'outerposition', [0, 0, 1, 1], 'color', 'w');
         ax_signal = axes(fig);
         sgtitle(fig, ['Mode №', num2str(mode_id), ', time from t_1 = ', num2str(x(1)), ' to t_2 = ', num2str(x(end))], 'FontSize', 14);
         subplot(2, 2, 1, ax_signal);
@@ -66,7 +67,7 @@ for mode_id = modes
         subplot(2, 2, 3, ax_wavelet);
         [cfs, frq] = cwt(U(x, mode_id), fs);
         cfs = abs(cfs);
-        frq = frq/3E10;
+        frq = frq/3E10;  %  перевод в обратные см
         surf(ax_wavelet, x, frq, cfs, 'EdgeColor', 'none', 'LineStyle', 'none', 'FaceLighting', 'phong');
         %colormap('jet');
         view(ax_wavelet, 2);
