@@ -23,7 +23,7 @@ for file_id = 1:numel(files)
     E12 = sqrt_energy(qVxyz);
     E12 = E12(t1:t2, :);
     T = E12.*E12;
-    [U, s, V] = svd(T, 0, 'vector');
+    [U, S, V] = svd(T-mean(T), 0);
     for mode_id = 1:size(U, 2)
         sig_filtered = filter_fft(U(:, mode_id)', fs, range);  %  чистые векторы
     end

@@ -17,7 +17,7 @@ for k = 1:numel(files)
 
     [n, qVxyz, ~] = get_matrices(filename, t1, t2);  %  считываем данные из .irc
     E12 = sqrt_energy(qVxyz);
-    s = svd(E12);  %  сингулярные числа в порядке убывания
+    s = svd(E12-mean(E12));  %  сингулярные числа в порядке убывания
 
     if (strcmp(t2, 'end'))
         t2 = size(E12, 1);

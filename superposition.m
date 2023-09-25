@@ -33,7 +33,7 @@ end
 %}
 
 %  PCA
-[U, S, V] = svd(x, 0);
+[U, S, V] = svd(x-mean(x), 0);
 
 q_e1 = quiver(ax, 0, 0, e1(1, 1), e1(2, 1), 'color', 'k', 'LineWidth', 2);
 q_e2 = quiver(ax, 0, 0, e2(1, 1), e2(2, 1), 'color', 'k', 'LineWidth', 2);

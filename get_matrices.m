@@ -14,9 +14,9 @@ function [n, qVxyz, xyz] = get_matrices(filename, t1, t2)
         end
         for j = 1:n
             line = fgetl(file);  %  считывание следующей строки
-            Values = str2num(line);  %#ok<ST2NM>  %  преобразование строки в числа
-            qVxyz(t, 4*j-3:4*j) = Values([1, 5:7]);
-            xyz(t, 3*j-2:3*j) = Values(2:4);
+            values = str2num(line);  %#ok<ST2NM>  %  преобразование строки в числа
+            qVxyz(t, 4*j-3:4*j) = values([1, 5:7]);
+            xyz(t, 3*j-2:3*j) = values(2:4);
         end
         [~] = fgetl(file);  %  пропуск линии с тире
     end

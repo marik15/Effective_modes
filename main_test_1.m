@@ -33,7 +33,7 @@ end
 
 E12 = sqrt_energy(qVxyz);
 T = E12;  %  .*E12;
-[U, S, V] = svd(T, 0);
+[U, S, V] = svd(T-mean(T), 0);
 
 j = 1;
 k_arr = 1:size(U, 2);
