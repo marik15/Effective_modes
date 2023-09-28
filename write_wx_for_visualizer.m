@@ -1,9 +1,8 @@
 % Записывает данные в файл по шаблону wx.sample для подачи в программу-визуализатор ChemCraft
 
-function write_wx_for_visualizer(sample, q, xyz, n, U, s, V, fs, output_path)
+function write_wx_for_visualizer(sample, q, xyz, n, U, s, V, fs, output_file)
     file = fopen(sample, 'r');
     %output_file = append(output_path, 'output ', string(datetime(now, 'ConvertFrom', 'datenum', 'Format', 'yyyy-MM-dd HH-mm-ss')), '.txt');
-    output_file = [output_path, 'output.txt'];
     file2 = fopen(output_file, 'w');
     for str_i = 1:34  %  копирование до координат, не включая их
         fprintf(file2, [insertAfter(fgetl(file), "%", "%"), '\n']);
