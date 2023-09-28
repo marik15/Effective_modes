@@ -1,6 +1,6 @@
 % Проверяет, что время не вышло за границы диапазона по размеру файла
 
-function [t1, t2] = check_t1_t2(t1, t2, T)
+function [t1, t2] = check_t1_t2(t1, t2, T, filename)
     if isa(t2, 'char')
         t2 = T;
     end

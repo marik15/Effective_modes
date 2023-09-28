@@ -16,7 +16,7 @@ for file_id = 1:numel(files)
     filename = [path_data, files{file_id}];
     [n, qVxyz_full, xyz_full] = load_n_qVxyz_xyz(path_data, filename);
 
-    [t1, t2] = check_t1_t2(t1, t2, size(qVxyz_full, 1));
+    [t1, t2] = check_t1_t2(t1, t2, size(qVxyz_full, 1), filename);
     if (t_step < 3*n)
         warning('\t%s\n\t%s\n\n', 'Внимание!', 'Длина интервала [t1; t2] меньше числа степеней свободы!');
     end
