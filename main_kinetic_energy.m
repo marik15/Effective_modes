@@ -1,6 +1,6 @@
 % Вычисляет среднюю кинетическую энергию, указанную в шапке .irc-файла
 
-path = 'C:\MATLAB\Эффективные моды\';  %  папка с файлами, в конце символ \
+path_data = 'C:\MATLAB\Эффективные моды\';  %  папка с файлами, в конце символ \
 files = {%'w4_1.irc';
          %'w4_2.irc';
          %'w3_3.irc';
@@ -11,22 +11,26 @@ files = {%'w4_1.irc';
          'w5_1a.irc';
          };  %  названия файлов
 
-t_step = 100000;  %  шаг, отсчеты
+t_step = 20000;  %  шаг, отсчеты
 t1 = 1;  %  начиная с какого отсчёта по времени усреднять
-t2 = 100000;  %  последний отсчёт по времени
+t2 = 60001;  %  последний отсчёт по времени
 
 % --- ниже не нужно редактировать
 
-output_path = [path, 'Kinetic Energy\'];
+output_path = [path_data, 'Kinetic Energy\'];
 if (~isfolder(output_path))
     mkdir(output_path);  %  создание папки с результатами
 end
 
-for k = 1:numel(files)
-    filename = files{k};
+fig = figure('units', 'normalized', 'outerposition', [0, 0, 1, 1], 'color', 'w');
+ax = axes(fig);
 
-    n = count_n([path, filename]);  %  число частиц
-    file = fopen([path, filename]);
+for k = 1:numel(files)
+    filename = [path_data, files{k}];
+    [~, name, ~] = fileparts(filename);
+
+    n = count_n(filename);  %  число частиц
+    file = fopen(filename);
     t = 0;  %  номер измерения
     energy = zeros(1, 1);  %  массив энергий
 
@@ -46,28 +50,27 @@ for k = 1:numel(files)
     fclose(file);
 
     for t = 0:fix((t2-t1+1)/t_step)-1  %  цикл по временным участкам
-        fig = figure('units', 'normalized', 'outerposition', [0, 0, 1, 1], 'color', 'w');
-        ax = axes(fig);
         t1_cur = t1 + t*t_step;
         t2_cur = t1_cur + t_step - 1;
         plot(ax, t1_cur:t2_cur, energy(t1_cur:t2_cur), 'b');
         xlim(ax, [t1_cur, t2_cur]);
-        title(ax, ['Dependence of the total kinetic energy on time for the file ', filename, ', mean = ', num2str(mean(energy(t1_cur:t2_cur)))], 'Interpreter', 'None');
+        title(ax, ['Dependence of the total kinetic energy on time for the file ', files{k}, ', mean = ', num2str(mean(energy(t1_cur:t2_cur)))], 'Interpreter', 'None');
         xlabel(ax, 'Time, countdown number');
         ylabel(ax, 'Kinetic energy');
         hold(ax, 'on');
         m = mean(energy(t1_cur:t2_cur));
         plot(ax, [t1_cur, t2_cur], [m, m], 'r');
         hold(ax, 'off');
-        saveas(fig, [output_path, 'Kinetic Energy ', filename, num2str(t1_cur), '-', num2str(t2_cur), '.jpg']);
-        close(fig);
+        saveas(fig, [output_path, 'Kinetic Energy ', name, ' ', num2str(t1_cur), '-', num2str(t2_cur), '.jpg']);
 
-        file2 = fopen([output_path, 'Kinetic Energy ', filename, ' ', num2str(t1_cur), '-', num2str(t2_cur), '.dat'], 'w');
+        file2 = fopen([output_path, 'Kinetic Energy ', name, ' ', num2str(t1_cur), '-', num2str(t2_cur), '.dat'], 'w');
         for i = t1_cur:t2_cur
             fprintf(file2, '%8u   %10.4e\n', i, energy(i));
         end
         fclose(file2);
     end
 end
+
+close(fig);
 
 fprintf('\t%s\n\t%s\n\t%s\n', datestr(datetime(now, 'ConvertFrom', 'datenum')), 'Файлы с кинетической энергией успешно записаны по адресу:', output_path);
