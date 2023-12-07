@@ -1,14 +1,14 @@
 % Строит Фурье- и вейвлет-спектры и сохраняет их в файл
 
 path_data = 'C:\MATLAB\Эффективные моды\';  %  папка с файлами
-files = {'w5_1a.irc'};  %  файлы
+files = {'w3_4a.irc'};  %  файлы
 
-modes = [1];  %  интересующие моды, диапазон можно задать так, например: 1:10
-t_step = 20000;  %  шаг, отсчеты
+modes = [2:3];  %  интересующие моды, диапазон можно задать так, например: 1:10
 t1 = 1;  %  начало траектории, отсчеты
-t2 = 60001;  %  конец траектории, отсчеты, либо слово 'end', если нужно посчитать до конца файла, но число строк неизвестно
-xlimit = 4000;  %  верхняя граница по частоте, см^-1, задаётся апостериори
+t2 = 'end';  %  конец траектории, отсчеты, либо слово 'end', если нужно посчитать до конца файла, но число строк неизвестно
+t_step = 0;  %  шаг, отсчеты, либо число 0, чтобы посчитать всю траекторию целиком
 
+xlimit = 4000;  %  верхняя граница по частоте, см^-1, задаётся апостериори
 fs = 2E+15;  %  частота дискретизации (сколько раз в секунду пишется: половина фемтосекунды)
 k_mean = 11;  %  во сколько раз сжать вейвлет-картинку (ускорить работу)
 
@@ -25,15 +25,18 @@ ax_sum = axes(fig);
 subplot(2, 2, 4, ax_sum);
 fig2 = figure('units', 'normalized', 'outerposition', [0, 0, 1, 1], 'color', 'w');
 ax_overlap_fft = axes(fig2);
+hold(ax_overlap_fft, 'on');
 fig3 = figure('units', 'normalized', 'outerposition', [0, 0, 1, 1], 'color', 'w');
 ax_overlap_wv = axes(fig3);
+hold(ax_overlap_wv, 'on');
+figure(fig);
 
-for k = 1:numel(files)
-    filename = [path_data, files{k}];
+for file_id = 1:numel(files)
+    filename = [path_data, files{file_id}];
     [filepath, name, ~] = fileparts(filename);
     [~, qVxyz_full, ~] = load_n_qVxyz_xyz(path_data, filename);
 
-    [t1, t2] = check_t1_t2(t1, t2, size(qVxyz_full, 1), filename);
+    [t1_id, t2_id, t_step_id] = check_t1_t2(t1, t2, t_step, size(qVxyz_full, 1), filename);
 
     output_path = append(filepath, '\Результаты Фурье и вейвлеты\', name, '\');
     if (~isfolder(output_path))
@@ -46,9 +49,9 @@ for k = 1:numel(files)
     E12 = sqrt_energy(qVxyz_full);  %  считаем квадратный корень из матрицы
     [U, ~, ~] = svd(E12-mean(E12), 0);
     for mode_id = modes
-        for t = 1:fix((t2-t1+1)/t_step)  %  цикл по временным участкам
-            t1_cur = t1 + (t-1)*t_step;
-            t2_cur = t1_cur + t_step - 1;
+        for t = 1:fix((t2_id-t1_id+1)/t_step_id)  %  цикл по временным участкам
+            t1_cur = t1_id + (t-1)*t_step_id;
+            t2_cur = t1_cur + t_step_id - 1;
             x = t1_cur:t2_cur;
 
             sgtitle(fig, ['Mode №', num2str(mode_id), ', time from t_1 = ', num2str(x(1)), ' to t_2 = ', num2str(x(end))], 'FontSize', 14);
@@ -127,11 +130,10 @@ for k = 1:numel(files)
         ylabel(ax_overlap_wv, 'Wavelet transform absolute values` exponent', 'FontSize', 14);
         xlim(ax_overlap_fft, [0, xlimit]);
         xlim(ax_overlap_wv, [0, xlimit]);
-        hold(ax_overlap_fft, 'on');
-        hold(ax_overlap_wv, 'on');
-        for t = 1:fix((t2-t1+1)/t_step)  %  цикл по временным участкам
-            t1_cur = t1 + (t-1)*t_step;
-            t2_cur = t1_cur + t_step - 1;
+        str = {};
+        for t = 1:fix((t2_id-t1_id+1)/t_step_id)  %  цикл по временным участкам
+            t1_cur = t1_id + (t-1)*t_step_id;
+            t2_cur = t1_cur + t_step_id - 1;
             p_fft(t) = plot(ax_overlap_fft, graph_freq_P1{mode_id, t}(:, 1), graph_freq_P1{mode_id, t}(:, 2));  %#ok<SAGROW>
             p_wv(t) = plot(ax_overlap_wv, graph_sum_wavelet{mode_id, t}(:, 1), graph_sum_wavelet{mode_id, t}(:, 2));  %#ok<SAGROW>
             str{t} = ['От ' num2str(t1_cur), ' до ', num2str(t2_cur)];  %#ok<SAGROW>
@@ -150,6 +152,8 @@ for k = 1:numel(files)
         legend(ax_overlap_wv, p_wv, str, 'FontSize', 14);
         saveas(fig2, [output_path, 'Мода №', num2str(mode_id), ' наложение Фурье-спектров.jpg']);
         saveas(fig3, [output_path, 'Мода №', num2str(mode_id), ' наложение вейвлет-спектров.jpg']);
+        delete(p_fft);
+        delete(p_wv);
     end
 
     fprintf('\t%s\n\t%s\n\t%s\n', datestr(datetime(now, 'ConvertFrom', 'datenum')), 'Спектры сохранены по адресу:', output_path);
