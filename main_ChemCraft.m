@@ -36,7 +36,7 @@ for file_id = 1:numel(files)
             xyz = xyz_full(t1_cur:t2_cur, :);
         end
         E12 = sqrt_energy(qVxyz);  %  вычисляем квадратный корень из матрицы
-        [U, S, V] = svd(E12-mean(E12), 0);  %  влияет на результат
+        [U, S, V] = svd(E12 - mean(E12), 0);  %  влияет на результат
 
         [~, name, ~] = fileparts(filename);
         output_path = [path_data, 'Результаты\', name, '\'];
