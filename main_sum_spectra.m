@@ -47,7 +47,7 @@ for file_id = 1:numel(files)
             frq = frq/3E10;  %  перевод в см^-1
 
             wavelet_sum = sum(cfs, 2);
-            graph_sum_wavelet{mode_id, t} = [frq, wavelet_sum];
+            graph_sum_wavelet{mode_id, t} = [flipud(frq), flipud(wavelet_sum)];
             s{t} = diag(S).^(2);
         end
     end
@@ -72,7 +72,8 @@ for file_id = 1:numel(files)
         xlabel(ax_sum_fft, 'Частота, см^{-1}');
         set(ax_sum_fft, 'FontSize', 14);
         saveas(fig_fft, append(output_path, name, ', время от ', num2str(t1_cur), ' до ', num2str(t2_cur), ' взвешенная сумма Фурье для Origin.png'));
-        
+        close(fig_fft);
+
         fig_wv = figure('units', 'normalized', 'outerposition', [0, 0, 1, 1], 'color', 'w');
         ax_sum_wv = axes(fig_wv);
         plot(ax_sum_wv, frq_wv, sum_wv);
@@ -81,11 +82,14 @@ for file_id = 1:numel(files)
         xlabel(ax_sum_wv, 'Частота, см^{-1}');
         set(ax_sum_wv, 'FontSize', 14);
         saveas(fig_wv, append(output_path, name, ', время от ', num2str(t1_cur), ' до ', num2str(t2_cur), ' взвешенная сумма вейвлет для Origin.png'));
+        close(fig_wv);
 
         file_ID_fft = fopen([output_path, name, ', время от ', num2str(t1_cur), ' до ', num2str(t2_cur), ' взвешенная сумма Фурье для Origin.txt'], 'w');
         file_ID_wv = fopen([output_path, name, ', время от ', num2str(t1_cur), ' до ', num2str(t2_cur), ' взвешенная сумма вейвлетов для Origin.txt'], 'w');
+        for i = 1:size(graph_sum_fft{mode_id, t}, 1)
+            fprintf(file_ID_fft, '%.10E %.10E\n', frq_fft(i), sum_fft(t, i));
+        end
         for i = 1:size(graph_sum_wavelet{mode_id, t}, 1)
-            fprintf(file_ID_wv, '%.10E %.10E\n', frq_fft(i), sum_fft(t, i));
             fprintf(file_ID_wv, '%.10E %.10E\n', frq_wv(i), sum_wv(t, i));
         end
         fclose(file_ID_fft);
@@ -94,6 +98,3 @@ for file_id = 1:numel(files)
 
     fprintf('\t%s\n\t%s\n\t%s\n', datestr(datetime(now, 'ConvertFrom', 'datenum')), 'Спектры сохранены по адресу:', output_path);
 end
-
-close(fig_fft);
-close(fig_wv);
