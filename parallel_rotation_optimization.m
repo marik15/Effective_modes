@@ -21,8 +21,6 @@ dL = 1;  %  шаг, отсчеты
 
 % --- ниже не нужно редактировать
 
-fs = 2E+15;  %  частота дискретизации (сколько раз в секунду пишется: половина фемтосекунды)
-
 m_cell = cell(0);
 xyz_cell = cell(0);
 name_cell = cell(0);
@@ -41,7 +39,7 @@ for k = 1:numel(files)
     
     mxyz_filename = append(output_path, name, '_xyz.mat');
     if (~isfile(mxyz_filename))
-        [n, qVxyz, xyz] = get_n_qVxyz_xyz(filename);
+        [n, qVxyz, xyz, fs] = get_n_qVxyz_xyz(filename);
         m = get_mass(qVxyz);
         save(mxyz_filename, 'm', 'xyz');
         fprintf('\t%s\n\t%s\n\t%s\n', datestr(datetime(now, 'ConvertFrom', 'datenum')), 'Файл для ускорения записан по адресу:', mxyz_filename);
@@ -51,7 +49,7 @@ for k = 1:numel(files)
     
     E12_filename = append(output_path, name, '_E12.mat');
     if (~isfile(E12_filename))
-        E12 = sqrt_energy(qVxyz);  %  вычисляем квадратный корень из матрицы
+        E12 = energy_power(qVxyz, 0.5);  %  вычисляем квадратный корень из матрицы
         save(E12_filename, 'E12');  %  сохранение данных для ускорения
         fprintf('\t%s\n\t%s\n\t%s\n', datestr(datetime(now, 'ConvertFrom', 'datenum')), 'Файл для ускорения записан по адресу:', E12_filename);
     end

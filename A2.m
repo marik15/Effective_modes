@@ -1,0 +1,12 @@
+%  Возвращает значения второй производной функции A, j = {1, 2, 3}
+
+function y = A2(t, x, N, j)
+    y = zeros(1, N(j));
+    prestart_index = 2*sum(N) + 6 + 3*sum(N(1:(j-1)));
+    for k = 1:N(j)
+        alpha = x(prestart_index + 3*k-2);
+        gamma = x(prestart_index + 3*k-1);
+        c =     x(prestart_index + 3*k);
+        y(k) = (0.5*alpha*gamma^2*exp(-gamma*t))/((alpha*exp(-gamma*t) + c)^0.5) - (0.25*alpha^2*gamma^2*exp(-2*gamma*t))/((alpha*exp(-gamma*t) + c)^1.5);
+    end
+end

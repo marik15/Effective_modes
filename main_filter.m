@@ -12,8 +12,7 @@ t1 = 1;  %  начало траектории, отсчеты
 t2 = 'end';  %  конец траектории, отсчеты, либо слово 'end', если нужно посчитать до конца файла, но число строк неизвестно
 t_step = 0;  %  шаг, отсчеты
      
-xlimit = 5000;  %  верхняя граница частоты, см^-1
-fs = 1E+16;  %  частота дискретизации, Гц
+xlimit = 5000;  %  верхняя граница частоты, см^{-1}
 k_mean = 1;  %  во сколько раз сжать вейвлет-картинку (ускорить работу)
 
 L_video = 1000;
@@ -30,9 +29,9 @@ for file_id = 1:numel(files)
     if (~isfolder(output_path))
         mkdir(output_path);  %  создание папки с результатами
     end
-    [n, qVxyz_full, xyz_full] = load_n_qVxyz_xyz(path_data, filename);
+    [n, qVxyz_full, xyz_full, fs] = load_n_qVxyz_xyz_fs(path_data, filename);
     [t1_id, t2_id, t_step_id] = check_t1_t2(t1, t2, t_step, size(qVxyz_full, 1), filename);
-    E12_full = sqrt_energy(qVxyz_full);
+    E12_full = energy_power(qVxyz_full, 0.5);
     for t = 0:fix((t2_id-t1_id+1)/t_step_id)-1  %  цикл по временным участочкам
         t1_cur = t1_id + t*t_step_id;
         t2_cur = t1_cur + t_step_id - 1;

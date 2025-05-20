@@ -65,7 +65,7 @@ U = zeros(10001, size(file, 1));
 
 for id = 1:size(file, 1)
     LOAD = load(append(path_data, file{id}{2}, '\', file{id}{2}, '.mat'));
-    E12_full = sqrt_energy(LOAD.qVxyz_full);
+    E12_full = energy_power(LOAD.qVxyz_full, 0.5);
     T = E12_full;  %  .*E12;
     [U1, S1, V1] = svd(T - mean(T), 0);
     U(:, id) = U1(:, file{id}{1});

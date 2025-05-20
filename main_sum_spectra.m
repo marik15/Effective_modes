@@ -1,7 +1,7 @@
 % Суммирует взвешенные вейвлет-спектры, и сохраняет их в файл
 
 path_data = 'C:\MATLAB\Эффективные моды\';  %  папка с файлами
-files = {'w3_4a.irc'};  %  файлы
+files = {'w4_2.irc'};  %  файлы
 
 modes = [2:3];  %  интересующие моды, диапазон можно задать так, например: 1:10
 t1 = 1;  %  начало траектории, отсчеты
@@ -17,7 +17,7 @@ k_mean = 11;  %  во сколько раз сжать вейвлет-карти
 for file_id = 1:numel(files)
     filename = [path_data, files{file_id}];
     [filepath, name, ~] = fileparts(filename);
-    [~, qVxyz_full, ~] = load_n_qVxyz_xyz(path_data, filename);
+    [~, qVxyz_full, ~, ~] = load_n_qVxyz_xyz_fs(path_data, filename);
 
     [t1_id, t2_id, t_step_id] = check_t1_t2(t1, t2, t_step, size(qVxyz_full, 1), filename);
 
@@ -35,7 +35,7 @@ for file_id = 1:numel(files)
             t1_cur = t1_id + (t-1)*t_step_id;
             t2_cur = t1_cur + t_step_id - 1;
 
-            E12 = sqrt_energy(qVxyz_full(t1_cur:t2_cur, :));  %  считаем квадратный корень из матрицы
+            E12 = energy_power(qVxyz_full(t1_cur:t2_cur, :), 0.5);  %  считаем квадратный корень из матрицы
             [U, S, ~] = svd(E12 - mean(E12), 0);
 
             [freq, P1] = fourier_transform(U(:, mode_id)', fs);

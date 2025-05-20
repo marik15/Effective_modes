@@ -18,7 +18,7 @@ ax = axes(fig);
         
 for k = 1:numel(files)
     filename = [path_data, files{k}];
-    [n, qVxyz_full, ~] = load_n_qVxyz_xyz(path_data, filename);  %  считываем данные из .irc
+    [n, qVxyz_full, ~, ~] = load_n_qVxyz_xyz_fs(path_data, filename);  %  считываем данные из .irc
 
     if (strcmp(t2, 'end'))
         t2 = size(qVxyz_full, 1);
@@ -29,7 +29,7 @@ for k = 1:numel(files)
         t2_cur = t1_cur + t_step - 1;
         
         qVxyz = qVxyz_full(t1_cur:t2_cur, :);
-        E12 = sqrt_energy(qVxyz);
+        E12 = energy_power(qVxyz, 0.5);
         s = svd(E12-mean(E12));  %  сингулярные числа в порядке убывания
 
         plot(ax, s);  %  построение графика

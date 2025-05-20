@@ -1,19 +1,19 @@
 % Вычисляет среднюю кинетическую энергию, указанную в шапке .irc-файла
 
-path_data = 'C:\MATLAB\Эффективные моды\';  %  папка с файлами, в конце символ \
-files = {%'w4_1.irc';
+path_data = 'E:\MATLAB\Эффективные моды\data\';  %  папка с файлами, в конце символ \
+files = {%'w4_1b.irc';
          %'w4_2.irc';
          %'w3_3.irc';
-         %'w3_4.irc';
+         'w3_1.irc';
          %'w8_5.irc';
          %'w8_6.irc';
          %'w8_7.irc';
-         'w5_1a.irc';
+         %'w5_1a.irc';
          };  %  названия файлов
 
-t_step = 20000;  %  шаг, отсчеты
+t_step = 100000;  %  шаг, отсчеты
 t1 = 1;  %  начиная с какого отсчёта по времени усреднять
-t2 = 60001;  %  последний отсчёт по времени
+t2 = 100001;  %  последний отсчёт по времени
 
 % --- ниже не нужно редактировать
 
@@ -61,6 +61,7 @@ for k = 1:numel(files)
         m = mean(energy(t1_cur:t2_cur));
         plot(ax, [t1_cur, t2_cur], [m, m], 'r');
         hold(ax, 'off');
+        %{
         saveas(fig, [output_path, 'Kinetic Energy ', name, ' ', num2str(t1_cur), '-', num2str(t2_cur), '.jpg']);
 
         file2 = fopen([output_path, 'Kinetic Energy ', name, ' ', num2str(t1_cur), '-', num2str(t2_cur), '.dat'], 'w');
@@ -68,6 +69,7 @@ for k = 1:numel(files)
             fprintf(file2, '%8u   %10.4e\n', i, energy(i));
         end
         fclose(file2);
+        %}
     end
 end
 

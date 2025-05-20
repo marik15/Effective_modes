@@ -9,7 +9,6 @@ t2 = 'end';  %  конец траектории, отсчеты, либо сло
 t_step = 0;  %  шаг, отсчеты, либо число 0, чтобы посчитать всю траекторию целиком
 
 xlimit = 4000;  %  верхняя граница по частоте, см^-1, задаётся апостериори
-fs = 2E+15;  %  частота дискретизации (сколько раз в секунду пишется: половина фемтосекунды)
 k_mean = 11;  %  во сколько раз сжать вейвлет-картинку (ускорить работу)
 
 % --- ниже не нужно редактировать
@@ -34,7 +33,7 @@ figure(fig);
 for file_id = 1:numel(files)
     filename = [path_data, files{file_id}];
     [filepath, name, ~] = fileparts(filename);
-    [~, qVxyz_full, ~] = load_n_qVxyz_xyz(path_data, filename);
+    [~, qVxyz_full, ~, fs] = load_n_qVxyz_xyz_fs(path_data, filename);
 
     [t1_id, t2_id, t_step_id] = check_t1_t2(t1, t2, t_step, size(qVxyz_full, 1), filename);
 
@@ -46,7 +45,7 @@ for file_id = 1:numel(files)
     graph_freq_P1 = cell(0);
     graph_sum_wavelet = cell(0);
     
-    E12 = sqrt_energy(qVxyz_full);  %  считаем квадратный корень из матрицы
+    E12 = energy_power(qVxyz_full, 0.5);  %  считаем квадратный корень из матрицы
     [U, ~, ~] = svd(E12-mean(E12), 0);
     for mode_id = modes
         for t = 1:fix((t2_id-t1_id+1)/t_step_id)  %  цикл по временным участкам

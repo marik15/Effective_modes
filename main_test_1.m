@@ -31,7 +31,7 @@ for t = 1:T
     end
 end
 
-E12 = sqrt_energy(qVxyz);
+E12 = energy_power(qVxyz, 0.5);
 T = E12;  %  .*E12;
 [U, S, V] = svd(T-mean(T), 0);
 
