@@ -4,13 +4,13 @@ clearvars;
 close all;
 clc;
 
-path_aux = 'E:\MATLAB\Эффективные моды\Вспомогательные файлы\';
+path_aux = 'D:\MATLAB\Эффективные моды\Вспомогательные файлы\';
 files_group = {'w5_2a.mat', 'w5_2a_1.mat', 'w5_2a_2.mat'};
 file_id = 1;  %  какой файл
 step = 500;  %  по сколько отсчетов шагаем
 
 [arr, fs] = get_arr(path_aux, files_group, file_id, step);
-E_kin_rab = get_initial_data('E:\MATLAB\Эффективные моды\initial_data.xlsx', files_group{file_id}(1:end-4));
+E_kin_rab = get_initial_data('D:\MATLAB\Эффективные моды\initial_data.xlsx', files_group{file_id}(1:end-4));
 n = size(arr, 2);
 N = [2*n, max(n - 6 - 3*n, 3), n];  %  r, a, b
 
@@ -52,8 +52,8 @@ end
 beq = zeros(size(Aeq, 1), 1);
 lb = [zeros(1, 2*sum(N) + 6), repmat([-5, 0, 0], 1, sum(N))];
 ub = [2*pi*0.6*ones(1, sum(N)), 2*pi*ones(1, sum(N)), 5*ones(1, 6), repmat([10, 5, 10], 1, sum(N))];
-options = optimoptions('fmincon', 'Display', 'iter', 'MaxIterations', 1e+3, 'MaxFunctionEvaluations', 3e+4, 'OptimalityTolerance', 1e-6);  %  'TypicalX', x_typical
-[x, fval] = fmincon(@(vec) norm(nonlinear_equations_system_full_2(vec, N, size(arr, 1), E_kin_rab))^2, x0, -A, b, Aeq, beq, lb, ub, [], options);
+options = optimoptions('fmincon', 'Display', 'iter', 'MaxIterations', 1e+3, 'MaxFunctionEvaluations', 3e+4);  %  'TypicalX', x_typical, 'OptimalityTolerance', 1e-8
+[x, fval] = fmincon(@(vec) norm(nonlinear_equations_system_full_4(vec, N, size(arr, 1), E_kin_rab))^2, x0, -A, b, Aeq, beq, lb, ub, [], options);
 
 t = (0:(size(arr, 1) - 1)) * step / (fs * (1e-12));
 fig = plot_solution(t, arr, x, N);

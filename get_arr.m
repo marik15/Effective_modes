@@ -7,8 +7,8 @@ function [arr, fs] = get_arr(path_aux, files_group, file_id, step)
     T_width = 0.5e-12;  %  ширина скользящего окна, секунды
 
     range_3 = [5, 320;
-             320, 1200;
-             1200, 2000];
+               320, 1200;
+               1200, 2000];
 
     range_4 = range_3;
     range_5 = range_3;
