@@ -5,4 +5,7 @@ function E_kin_rab = get_initial_data(filename, trajectory_name)
     ind = ismember(A(:, 1), trajectory_name);
     E_kin_rab = [A{ind, 4:6}];
     %  N0 = A{ind, 7};
+    if isempty(E_kin_rab)
+        warning(append(' There is no info about ', trajectory_name, ' in ', filename));
+    end
 end

@@ -1,43 +1,71 @@
 %  Вычисляет массив сумм под кривой Фурье-спектра по нескольким областям от времени на одном графике
 %  arr = {r, a, b}
 
-function [arr, fs] = get_arr(path_aux, files_group, file_id, step)
+function [arr, fs, range] = get_arr(path_aux, filename, step)
     threshold = 0.5;  %  доля энергии
     dx = 5;  %  шаг интегрирования по частоте
     T_width = 0.5e-12;  %  ширина скользящего окна, секунды
 
-    range_3 = [5, 320;
+    range_3 = [0, 225;
+               225, 330;
+               350, 610;
+               610, 800;
+               800, 1100;
+               1200, 2000];  %  тример
+
+    range_3 = [0, 320;
                320, 1200;
                1200, 2000];
 
-    range_4 = range_3;
-    range_5 = range_3;
+    range_4 = range_3;  %#ok<*NASGU>  %  тетрамер
+    range_5 = range_3;  %  пентамер
 
-    LOAD_1 = load(append(path_aux, files_group{1}));
-    LOAD_2 = load(append(path_aux, files_group{2}));
-    LOAD_3 = load(append(path_aux, files_group{3}));
-    min_n = min([size(LOAD_1.qVxyz_full, 1), size(LOAD_2.qVxyz_full, 1), size(LOAD_3.qVxyz_full, 1)]);
+    range_6 = [0, 225;
+               225, 330;
+               350, 610;
+               610, 850;
+               850, 1100;
+               1200, 2000];  %  гексамер
 
-    name = files_group{file_id};
-    switch name(2)
-        case '3'
-            range = range_3;
-        case '4'
-            range = range_4;
-        case '5'
-            range = range_5;
-        otherwise
-            printf(append('Error: ', name, ' is not 3, 4 or 5 cluster. Check the frequency ranges.'));
+    range_7 = [0, 225;
+               225, 330;
+               350, 610;
+               610, 830;
+               830, 1100;
+               1200, 2000];  %  гептамер
+
+    range_8 = [0, 285;
+               285, 330;
+               350, 610;
+               610, 900;
+               900, 1100;
+               1200, 2000];  %  гептамер
+
+    [filenames, ~] = get_similar_names(path_aux, filename);
+    min_n = Inf;
+    for k = 1:numel(filenames)
+        LOAD(k) = load(append(path_aux, filenames{k}));  %#ok<AGROW>
+        if (size(LOAD(k).qVxyz_full, 1) <= min_n)
+            min_n = size(LOAD(k).qVxyz_full, 1);
+        end
+    end
+
+    [startIndex, endIndex] = regexp(filename, '[a-z]+\d+');
+    digit = filename(regexp(filename(startIndex:endIndex), '\d+'):endIndex);
+    try
+        range = eval(append('range_', num2str(digit)));  %  присваиваем интервал нужных частот
+    catch
+        error(append('Error: ', filename, ' is not 3-8 cluster. Update the frequency ranges.'));
     end
     for k = 1:size(range, 1)
         freqs_int{k} = range(k, 1):dx:range(k, 2);  %#ok<AGROW>
     end
-    LOAD = load(append(path_aux, name));
+    LOAD = load(append(path_aux, filename));
     n = LOAD.n;
     fs = LOAD.fs;
     qVxyz_full = LOAD.qVxyz_full;
 
-    N_width = T_width*fs;  %  ширина интервала, отсчеты
+    N_width = T_width*fs;  %  ширина скользящего окна, отсчеты
     N_steps = fix(1 + (min_n - N_width)/step);
     arr = zeros(N_steps, size(range, 1));  %  array of contribution values
     sing = zeros(N_steps, 3*n);

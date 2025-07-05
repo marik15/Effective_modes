@@ -4,8 +4,8 @@ clearvars;
 close all;
 clc;
 
-path_data = 'C:\Users\zakir\Downloads\tmp\';  %  папка с irc
-path_aux = 'E:\MATLAB\Эффективные моды\Вспомогательные файлы\';  %  куда сохранять
+path_data = 'D:\MATLAB\Эффективные моды\data\';  %  папка с irc
+path_aux = 'D:\MATLAB\Эффективные моды\Вспомогательные файлы\';  %  куда сохранять
 
 files = dir(append(path_data, '*.irc'));
 
