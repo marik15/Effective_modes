@@ -20,12 +20,12 @@ for idx = 1:numel(names)
 end
 
 for file_id = 1:numel(names)
-    [arr, fs, range] = get_arr(path_aux, append(names{idx}, '.mat'), step);
+    [arr, fs, range] = get_arr(path_aux, append(names{file_id}, '.mat'), step);
     t = (1:size(arr, 1))*step/fs*(1e+12);  %  время отсчетов, пс
 
-    k = LOAD.k_best{file_id}(1, :);
-    [t_de, sol] = ode15s(@(t, y) odefun_kin(t, y, k), linspace(t(1), t(end), const), arr(1, :));
-    fig = plot_sol(t, arr, t_de, sol, append(names{file_id}, ' распределение энергии по областям'));
-    %exportgraphics(fig, append(path_output, names{file_id}, ' порог=', num2str(0.5), '.png'), "Resolution", 300);
+    k_best = LOAD.k_best{file_id}(1, :);
+    [t_de, sol] = ode15s(@(t, y) odefun_kin(t, y, k_best), linspace(t(1), t(end), const), arr(1, :));
+    fig = plot_sol(t, arr, t_de, sol, append(names{file_id}, ' распределение энергии по областям'), k_best);
+    exportgraphics(fig, append(path_output, names{file_id}, ' порог=', num2str(0.5), '.png'), 'Resolution', 300);
     close(fig);
 end

@@ -13,9 +13,11 @@ function [arr, fs, range] = get_arr(path_aux, filename, step)
                800, 1100;
                1200, 2000];  %  тример
 
+    %%{
     range_3 = [0, 320;
                320, 1200;
                1200, 2000];
+    %%}
 
     range_4 = range_3;  %#ok<*NASGU>  %  тетрамер
     range_5 = range_3;  %  пентамер
