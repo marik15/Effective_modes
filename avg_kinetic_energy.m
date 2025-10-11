@@ -32,8 +32,8 @@ for file_id = 9  %  1:numel(files)
             [~] = fgetl(file);
         end
         line = fgetl(file);
-        line = line(11:end);  %  убираем значение TIME
         values = str2num(line);  %#ok<ST2NM>
+        values(1) = [];
         energy(t, 1) = values(1);  %  энергия из строчки
         for j = 1:n+2
             [~] = fgetl(file);
