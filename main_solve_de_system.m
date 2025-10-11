@@ -4,61 +4,70 @@ clearvars;
 close all;
 clc;
 
+needed_names = {'w3_2a_2'};
+%  {'w3_2a'; 'w3_2a_1'; 'w3_2a_2'; 'w3_3a'; 'w3_3a_1'; 'w3_3a_2'; 'w3_4a'; 'w4_1b'; 'w4_1b_1'; 'w4_2_1'};
+
 path_aux = 'D:\MATLAB\Эффективные моды\Вспомогательные файлы\';
 
 step = 500;  %  по сколько отсчетов шагаем
-const = 1e5;
+temp = 'Result add 9_vars 6 order step ';
+const = 3e4;
 N = 100;  %  число начальных приближений
 top = 5;
-lb = zeros(1, 6);
-options = optimoptions('fmincon', 'OutputFcn', @myoutputfcn, 'Display', 'final', 'MaxIterations', 2e+2, 'MaxFunctionEvaluations', 1e+4);
+lb = zeros(1, 9);
+%lb = zeros(1, 6);
+options = optimoptions('fmincon', 'Display', 'none', 'MaxIterations', 5e+2, 'MaxFunctionEvaluations', 2e+4);  %  'OutputFcn', @myoutputfcn, 
 
 d = dir(path_aux);
 d([d.isdir]) = [];  %  remove . and .. and all subpaths
-
-k_best = cell(numel(d), 1);
-f_vals_best = cell(numel(d), 1);
-
-for file_id = 1:numel(d)
-    disp(string(datetime('now')));
-    disp(append('Файл ', num2str(file_id), '/', num2str(numel(d)), ': ', d(file_id).name));
-    tic;
-    [arr, fs, ~] = get_arr(path_aux, d(file_id).name, step);
-    t = (0:(size(arr, 1) - 1)) * step / (fs * (1e-12));  %  время, мс
-    
-    k_best{file_id} = zeros(top, 6);
-    f_vals_best{file_id} = Inf(top, 1);
-    
-    for iter_id = 1:N
-        disp(append('Итерация №', num2str(iter_id)));
-        k0 = rand(1, 6);
-        [k, f_val] = fmincon(@(k) energy_kinetics(k, arr, t, const), k0, [], [], [], [], lb, [], [], options);
-        ind = 1;
-        flag = true;
-        while (flag && ((ind <= top) || (iter_id == 1)))
-            if (f_val < f_vals_best{file_id}(ind, 1))
-                k_best{file_id}(ind:end, :) = [k; k_best{file_id}(ind:end-1, :)];
-                f_vals_best{file_id}(ind:end, 1) = [f_val; f_vals_best{file_id}(ind:end-1, 1)];
-                flag = false;
-            else
-                ind = ind + 1;
-            end
-        end
-    end
-    toc;
-    save(append('Result ', string(datetime('now', 'Format', 'yyyy-MM-dd HH-mm-ss')), ' File ', num2str(file_id), '.mat'), 'k_best', 'f_vals_best');
+names = {d.name}';
+for idx = 1:numel(names)
+    names{idx} = names{idx}(1:end-4);
 end
 
-%{
-k = k_best{file_id}(1, :);
-[t_de, sol] = ode15s(@(t, y) odefun_kin(t, y, k), linspace(t(1), t(end), const), arr(1, :));
-fig = plot_sol(t, arr, t_de, sol, d(file_id).name(1:end-4));
-%}
+k_best = cell(numel(names), 1);
+f_vals_best = cell(numel(names), 1);
+y0_best = cell(numel(names), 1);
+done = 0;
 
-function stop = myoutputfcn(~, optimValues, ~)
-    stop = false;
-    if ((optimValues.iteration > 13) && (optimValues.fval > 5))  %  порог остановки
-        disp('Неудачное начальное приближение');
-        stop = true;
+for file_id = 1:numel(names)  %  диапазон файлов
+    if ismember(names{file_id}, needed_names)
+        disp(string(datetime('now')));
+        done = done + 1;
+        fprintf(1, 'Файл %d/%d\t(%d/%d\t%.2f-%.2f%%):\t%s\n', file_id, numel(names), done, numel(needed_names), 100 * (done - 1)/numel(needed_names), 100 * done/numel(needed_names), names{file_id});
+        tic;
+        [arr, fs, ~, n_eff_arr] = get_arr(path_aux, append(names{file_id}, '.mat'), step, false);
+        t = (0:(size(arr, 1) - 1)) * step / (fs * (1e-12));  %  время, мс
+
+        k_best{file_id} = zeros(top, 6);
+        f_vals_best{file_id} = Inf(top, 1);
+        y0_best{file_id} = zeros(top, size(arr, 2));
+
+        for iter_id = 1:N
+            fprintf(1, 'Итерация № %d/%d:\t', iter_id, N);
+            %k0 = rand(1, 6);  %  k0 = gamrnd(5.8, 20.7, 1, 6);
+            x0 = [rand(1, 6), arr(1, :)];
+            %[k, f_val, exitflag, output] = fmincon(@(k) energy_kinetics(k, arr, t, const), k0, [], [], [], [], lb, [], [], options);
+            [x, f_val, exitflag, output] = fmincon(@(x) energy_kinetics(x, arr, t, const), x0, [], [], [], [], lb, [], [], options);
+            f_val = f_val/sqrt(3*size(arr, 1));
+            ind = 1;
+            flag = true;
+            while (flag && ((ind <= top) || (iter_id == 1)))
+                if (f_val < f_vals_best{file_id}(ind, 1))
+                    %k_best{file_id}(ind:end, :) = [k; k_best{file_id}(ind:end-1, :)];
+                    k_best{file_id}(ind:end, :) = [x(1:6); k_best{file_id}(ind:end-1, :)];
+                    f_vals_best{file_id}(ind:end, 1) = [f_val; f_vals_best{file_id}(ind:end-1, 1)];
+                    y0_best{file_id}(ind:end, :) = [x(7:9); y0_best{file_id}(ind:end-1, :)];
+                    flag = false;
+                else
+                    ind = ind + 1;
+                end
+            end
+            fprintf(1, 'Точность:\t%.3f\tИтераций: %d\tВызовов функций: %d\texitflag: %d\n', f_val, output.iterations, output.funcCount, exitflag);
+        end
+        fprintf(1, 'Лучшая точность: %.3f\n', f_vals_best{file_id}(1, 1));
+        toc;
+        %save(append(temp, num2str(step), ' ', string(datetime('now', 'Format', 'yyyy-MM-dd HH-mm-ss')), ' File ', names{file_id}, '.mat'), 'k_best', 'f_vals_best');
+        save(append(temp, num2str(step), ' ', string(datetime('now', 'Format', 'yyyy-MM-dd HH-mm-ss')), ' File ', names{file_id}, '.mat'), 'k_best', 'f_vals_best', 'y0_best');
     end
 end

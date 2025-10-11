@@ -15,7 +15,7 @@ lb = zeros(1, 6);
 options = optimoptions('fmincon', 'Display', 'iter', 'MaxIterations', 1e+3, 'MaxFunctionEvaluations', 3e+4);
 
 for file_id = 1:numel(d)
-    [arr, fs, ~] = get_arr(path_aux, files_group, file_id, step);
+    [arr, fs, ~] = get_arr(path_aux, files_group, file_id, step, true);
     t = (0:(size(arr, 1) - 1)) * step / (fs * (1e-12));  %  время, мс
     
     k0 = 10*rand(1, 6);

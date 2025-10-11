@@ -81,8 +81,8 @@ function write_wx_for_visualizer(sample, q, xyz, n, U, s, V, fs, output_file)
         fprintf(file2, [sprintf(['%15s', format_n], '', mode:mode+L-1) '\n']);  %  номер блока
         freqs = zeros(1, L);
         for i = 1:L
-            [freq, P1] = fourier_transform(U(:, mode+i-1)', fs);
-            freqs(1, i) = get_main_freq(freq, P1);
+            [freq, fourier_coeffs] = fourier_transform(U(:, mode+i-1)', fs);
+            freqs(1, i) = get_main_freq(freq, fourier_coeffs);
         end
         freqs = freqs/3E+10;  %  частота в обратных сантиметрах
         fprintf(file2, ['       FREQUENCY:   ', sprintf(format_fr, freqs), '\n']);  %  FREQUENCY

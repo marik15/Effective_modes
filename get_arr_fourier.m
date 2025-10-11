@@ -1,11 +1,12 @@
 %  Вычисляет массив сумм под кривой Фурье-спектра по нескольким областям от времени на одном графике
+%  arr = {r, a, b}
 
-function [arr, fs, range, n_eff_arr, frac] = get_arr(path_aux, filename, step, is_min)
+function [arr, fs, range, n_eff_arr, frac, freq, fourier_coeffs_arr, freqs_int] = get_arr_fourier(path_aux, filename, step, is_min)
     threshold = 0.5;  %  доля энергии
     dx = 5;  %  шаг интегрирования по частоте
     T_width = 0.5e-12;  %  ширина скользящего окна, секунды
 
-    range_3 = [0, 225
+    range_3 = [0, 225;
                225, 330;
                350, 610;
                610, 800;
@@ -76,6 +77,7 @@ function [arr, fs, range, n_eff_arr, frac] = get_arr(path_aux, filename, step, i
     arr = zeros(N_steps, size(range, 1));  %  массив с энергией в данный момент
     n_eff_arr = zeros(N_steps, 1);
     frac = zeros(n, N_steps, size(range, 1));  %  массив с долей кинетической энергии в каждом диапазоне в данный момент
+    fourier_coeffs_arr = zeros(n, N_steps, ceil((N_width + 1)/2));
     for time_id = 1:N_steps
         t = fix((1:N_width) + (time_id - 1) * step);
         E12_full = energy_power(qVxyz_full(t, :), 0.5);
@@ -88,6 +90,7 @@ function [arr, fs, range, n_eff_arr, frac] = get_arr(path_aux, filename, step, i
         %for mode_id = (n_eff+1):size(U, 2)
             [freq, fourier_coeffs] = fourier_transform(U(:, mode_id)', fs);
             freq = freq/3E+10;
+            fourier_coeffs_arr(mode_id, time_id, :) = fourier_coeffs;
             idx = zeros(size(range, 1), size(freq, 2), 'logical');
             integral = zeros(1, size(range, 1));
             for row = 1:size(range, 1)

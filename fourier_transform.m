@@ -1,10 +1,15 @@
-% Вычисляет модуль и частоты быстрого преобразования Фурье (fft)
+%  Вычисляет модуль и частоты быстрого преобразования Фурье (fft)
 
-function [freq, P1] = fourier_transform(sig, fs)
-    Y = fft(sig);
-    L = size(sig, 2);
-    P2 = abs(Y/L);
-    P1 = P2(1:fix(L/2+1));
-    P1(2:end-1) = 2*P1(2:end-1);
-    freq = fs*(0:(L/2))/L;
+function [frequencies, fourier_coeffs] = fourier_transform(sig, fs)
+    N = numel(sig);  %  длина сигнала
+    fourier_coeffs = abs(fft(sig) / N);
+    if mod(N, 2) == 0  %  четное количество точек
+        fourier_coeffs = fourier_coeffs(1:N/2 + 1);  %  для вещественных сигналов амплитуды симметричны, берем первую половину
+        fourier_coeffs(2:end-1) = 2 * fourier_coeffs(2:end-1);  %  корректировка амплитуд (удваиваем все, кроме DC и Nyquist)
+        frequencies = (0:N/2) * fs / N;
+    else  %  нечетное количество точек
+        fourier_coeffs = fourier_coeffs(1:(N + 1)/2);
+        fourier_coeffs(2:end) = 2 * fourier_coeffs(2:end);  %  корректировка амплитуд (удваиваем все, кроме DC)
+        frequencies = (0:(N - 1)/2) * fs / N;
+    end
 end
