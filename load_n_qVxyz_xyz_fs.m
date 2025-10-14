@@ -3,7 +3,7 @@
 function [n, qVxyz_full, xyz_full, fs] = load_n_qVxyz_xyz_fs(path_output, filename)
     [~, name, ~] = fileparts(filename);
     if isfile([path_output, name, '.mat'])
-        load([path_output, name, '.mat'], 'qVxyz_full', 'xyz_full', 'fs');  %  если файл уже есть
+        load([path_output, name, '.mat'], 'n', 'qVxyz_full', 'xyz_full', 'fs');  %  если файл уже есть
     else
         [n, qVxyz_full, xyz_full, fs] = get_n_qVxyz_xyz_fs(filename);
         if (~isfolder(path_output))
