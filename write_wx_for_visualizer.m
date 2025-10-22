@@ -62,6 +62,9 @@ function write_wx_for_visualizer(sample, q, xyz, n, U, s, V, fs, output_file)
     REDUCED_MASS = '    REDUCED MASS:      0.00000     0.00000     0.00000     0.00000     0.00000';
     step = 5;  %  максимальное число столбцов
     M = size(s, 1);
+    if (s(1) >= 100)
+        warning('Внимание! Сингулярное число не поместится в форматированный столбец.');
+    end
     for mode = 1:step:M
         fprintf(file2, '\n');  %  пустая строка
 
@@ -112,5 +115,9 @@ function write_wx_for_visualizer(sample, q, xyz, n, U, s, V, fs, output_file)
         end
     end
     fclose(file2);
-    fprintf('\t%s\n\t%s\n\t%s\n', datestr(datetime(now, 'ConvertFrom', 'datenum')), 'Файл для ChemCraft успешно записан по адресу:', output_file);
+    [path, name, ext] = fileparts(output_file);
+    if isempty (path)
+        path = append(cd, '\');
+    end
+    fprintf('\t%s\n\t%s\n\t%s%s%s\n', string(datetime('now', 'Format', 'yyyy-MM-dd HH-mm-ss')), 'Файл для ChemCraft записан по адресу:', path, name, ext);
 end

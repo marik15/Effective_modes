@@ -1,13 +1,13 @@
 %  Подготовливает данные для записи в ChemCraft
 
-path_data = 'E:\MATLAB\Эффективные моды\';  %  папка с данными, в конце \
-files = {'w5_1a.irc'};  %  имена файлов
+path_data = 'D:\MATLAB\Эффективные моды\data\';  %  папка с данными, в конце \
+files = {'extract.irc'};  %  имена файлов
 
 t1 = 1;  %  начало траектории
-t2 = 60001;  %  конец траектории, или 'end'
-t_step = 20000;  %  шаг, отсчеты
+t2 = 5001;  %  конец траектории, или 'end'
+t_step = 5000;  %  шаг, отсчеты
 
-% Ниже не реадктировать
+% Ниже не редактировать
 
 sample = [cd, '\wx.sample'];
 
@@ -26,7 +26,7 @@ for file_id = 1:numel(files)
     end
 
     for t = 0:fix((t2_id-t1_id+1)/t_step_id)-1
-        t1_cur = t1_id + t*t_step_id;
+        t1_cur = t1_id + t * t_step_id;
         t2_cur = t1_cur + t_step_id - 1;
 
         if isa(t2_cur, 'double')
