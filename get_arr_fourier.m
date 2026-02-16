@@ -1,17 +1,20 @@
-%  Вычисляет массив сумм под кривой Фурье-спектра по нескольким областям от времени на одном графике
+    %  Вычисляет массив сумм под кривой Фурье-спектра по нескольким областям от времени на одном графике
 %  arr = {r, a, b}
 
 function [arr, fs, range, n_eff_arr, frac, freq, fourier_coeffs_arr, freqs_int] = get_arr_fourier(path_aux, filename, step, is_min)
     threshold = 0.5;  %  доля энергии
     dx = 5;  %  шаг интегрирования по частоте
     T_width = 0.5e-12;  %  ширина скользящего окна, секунды
+    upper_limit = 5000;  %  верхний предел интегрирования, см^{-1}
 
+    %{
     range_3 = [0, 225;
                225, 330;
                350, 610;
                610, 800;
                800, 1100;
                1200, 2000];  %  тример
+    %}
 
     %%{
     range_3 = [5, 320;  %  Radial
@@ -41,7 +44,7 @@ function [arr, fs, range, n_eff_arr, frac, freq, fourier_coeffs_arr, freqs_int] 
                350, 610;
                610, 900;
                900, 1100;
-               1200, 2000];  %  гептамер
+               1200, 2000];  %  октамер
 
     if is_min
         [filenames, ~] = get_similar_names(path_aux, filename);
@@ -59,7 +62,7 @@ function [arr, fs, range, n_eff_arr, frac, freq, fourier_coeffs_arr, freqs_int] 
     try
         range = eval(append('range_', num2str(digit)));  %  присваиваем интервал нужных частот
     catch
-        error(append('Error: ', filename, ' is not suitable cluster. Update the frequency ranges.'));
+        error(append('Error: ', filename, ' conteins not suitable cluster. Update the frequency ranges.'));
     end
     for k = 1:size(range, 1)
         freqs_int{k} = range(k, 1):dx:range(k, 2);  %#ok<AGROW>
@@ -86,7 +89,8 @@ function [arr, fs, range, n_eff_arr, frac, freq, fourier_coeffs_arr, freqs_int] 
         s = diag(S) * sqrt((1e+4) / size(U, 1) / 4.1868);  %  энергия, ккал/моль
         n_eff = find(cumsum(s)/sum(s) >= threshold - (1e-10), 1);
         n_eff_arr(time_id) = n_eff;
-        for mode_id = 1:n_eff
+        for mode_id = 1:size(U, 2)
+        %for mode_id = 1:n_eff
         %for mode_id = (n_eff+1):size(U, 2)
             [freq, fourier_coeffs] = fourier_transform(U(:, mode_id)', fs);
             freq = freq/3E+10;
@@ -98,8 +102,8 @@ function [arr, fs, range, n_eff_arr, frac, freq, fourier_coeffs_arr, freqs_int] 
                 interpolant = interp1(freq, idx(row, :).*fourier_coeffs, freqs_int{row});
                 integral(row) = trapz([freqs_int{row}(1) - dx, freqs_int{row}, freqs_int{row}(end) + dx], [0, interpolant, 0], 2);
             end
-            integral_total = trapz(freq, fourier_coeffs, 2);
-            arr(time_id, :) = arr(time_id, :) + (s(mode_id)^2) * integral / integral_total;  %  нормировка на квадрат сингулярного числа
+            integral_total = trapz(freq(freq <= upper_limit), fourier_coeffs(freq <= upper_limit), 2);
+            arr(time_id, :) = arr(time_id, :) + (s(mode_id)^2) * integral / integral_total;  %  добавление весов квадратов сингулярных чисел
             frac(mode_id, time_id, :) = integral/integral_total;
         end
     end

@@ -7,12 +7,16 @@ clc;
 step = 500;  %  по сколько отсчетов шагаем
 
 path_aux = 'D:\MATLAB\Эффективные моды\Вспомогательные файлы\';
-path_output = 'D:\MATLAB\Эффективные моды\Видео графики распределения энергии и долей total\';
+path_output = 'D:\MATLAB\Эффективные моды\Видео графики распределения энергии и долей total 2\';
 
 files = dir(append(path_aux, '*.mat'));
 files = files(~ismember({files.name}, {'.', '..'}));
+keepNames = {'w3_2a.mat','w3_2a_1.mat','w3_2a_2.mat', ...
+             'w3_3a.mat','w3_3a_1.mat','w3_3a_2.mat', ...
+             'w3_4a.mat','w4_1b.mat','w4_1b_1.mat', 'w4_2_1.mat'};
+files = files(ismember({files.name}, keepNames));  %  оставляем только некоторые файлы
 
-for files_id = 1:numel(files)
+for files_id = 1:1%numel(files)
     [arr, fs, range, n_eff_arr, frac, freq, fourier_coeffs_arr, freqs_int] = get_arr_fourier(path_aux, files(files_id).name, step, false);
     t = (1:size(arr, 1))*step/fs*(1e+12);  %  время отсчетов, пс
 
@@ -34,7 +38,7 @@ for files_id = 1:numel(files)
     end
 
     xlim(ax_arr, [0, ceil(t(end))]);
-    xlim(ax_fourier, [freq(1), 2500]);
+    xlim(ax_fourier, [freq(1), 5000]);
     ylim_arr = ax_arr.YLim;
     ylim_frac = ax_frac.YLim;
     ylim(ax_frac, [0, 1]);
