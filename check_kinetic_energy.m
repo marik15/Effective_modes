@@ -14,8 +14,8 @@ qVxyz_full = LOAD.qVxyz_full;
 t = 1;
 E = 0;
 for atom = 1:size(qVxyz_full, 2)/4
-    m = mass_by_charge(qVxyz_full(t, 4*atom - 3));
-    V = norm(qVxyz_full(t, 4*atom-2:4*atom));
+    m = mass_by_charge(qVxyz_full(t, 4 * atom - 3));
+    V = norm(qVxyz_full(t, (4 * atom - 2):(4 * atom)));
     E = E + 0.5*m*(V^2);
 end
 
