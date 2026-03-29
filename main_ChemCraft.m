@@ -1,13 +1,13 @@
-% Создаёт .txt-файл для подачи в программу-визуализатор ChemCraft
+%  РџРѕРґРіРѕС‚РѕРІР»РёРІР°РµС‚ РґР°РЅРЅС‹Рµ РґР»СЏ Р·Р°РїРёСЃРё РІ ChemCraft
 
-path_data = 'D:\MATLAB\Эффективные моды\data\';  %  папка с файлами, в конце символ \
-files = {'extract.irc'};  %  имена файлов
+path_data = 'D:\MATLAB\Р­С„С„РµРєС‚РёРІРЅС‹Рµ РјРѕРґС‹\data\';  %  РїР°РїРєР° СЃ РґР°РЅРЅС‹РјРё, РІ РєРѕРЅС†Рµ \
+files = {'extract.irc'};  %  РёРјРµРЅР° С„Р°Р№Р»РѕРІ
 
-t1 = 1;  %  начало траектории, отсчеты
-t2 = 60001;  %  конец траектории, отсчеты, либо слово 'end', если нужно посчитать до конца файла, но число строк неизвестно
-t_step = 20000;  %  шаг, отсчеты
+t1 = 1;  %  РЅР°С‡Р°Р»Рѕ С‚СЂР°РµРєС‚РѕСЂРёРё
+t2 = 5001;  %  РєРѕРЅРµС† С‚СЂР°РµРєС‚РѕСЂРёРё, РёР»Рё 'end'
+t_step = 5000;  %  С€Р°Рі, РѕС‚СЃС‡РµС‚С‹
 
-% ниже не нужно редактировать
+% РќРёР¶Рµ РЅРµ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ
 
 sample = [cd, '\wx.sample'];
 
@@ -17,7 +17,7 @@ for file_id = 1:numel(files)
 
     [t1_id, t2_id, t_step_id] = check_t1_t2(t1, t2, t_step, size(qVxyz_full, 1), filename);
     if (t_step_id < 3*n)
-        warning('\t%s\n\t%s\n\n', 'Внимание!', 'Длина интервала [t1; t2] меньше числа степеней свободы!');
+        warning('\t%s\n\t%s\n\n', 'Attention!', 'Р’С‹Р±СЂР°РЅ РёРЅС‚РµСЂРІР°Р» [t1; t2]');
     end
 
     q = zeros(n, 1);
@@ -25,7 +25,7 @@ for file_id = 1:numel(files)
         q(atom) = qVxyz_full(1, 4*atom-3);
     end
 
-    for t = 0:fix((t2_id-t1_id+1)/t_step_id)-1  %  цикл по временным участочкам
+    for t = 0:fix((t2_id-t1_id+1)/t_step_id)-1
         t1_cur = t1_id + t * t_step_id;
         t2_cur = t1_cur + t_step_id - 1;
 
@@ -33,15 +33,16 @@ for file_id = 1:numel(files)
             qVxyz = qVxyz_full(t1_cur:t2_cur, :);
             xyz = xyz_full(t1_cur:t2_cur, :);
         end
-        E12 = energy_power(qVxyz, 0.5);  %  вычисляем квадратный корень из матрицы
-        [U, S, V] = svd(E12 - mean(E12), 0);  %  влияет на результат
+        E12 = energy_power(qVxyz, 0.5);
+        [U, S, V] = svd(E12 - mean(E12), 0);
 
         [~, name, ~] = fileparts(filename);
-        output_path = [path_data, 'Результаты\', name, '\'];
+        output_path = [path_data, 'Р РµР·СѓР»СЊС‚Р°С‚С‹\', name, '\'];
         if (~isfolder(output_path))
-            mkdir(output_path);  %  создание папки с результатами
+            mkdir(output_path);
         end
 
-        write_wx_for_visualizer(sample, q, xyz, n, U, diag(S), V, fs, [output_path, 'output ', num2str(t1_cur), '-', num2str(t2_cur), '.txt']);  %  запись в файл
+        s = diag(S).^2 * sqrt((1e+4) / size(U, 1) / 4.1868);  %  СЌРЅРµСЂРіРёСЏ, РєРєР°Р»/РјРѕР»СЊ
+        write_wx_for_visualizer(sample, q, xyz, n, U, s, V, fs, [output_path, 'output ', num2str(t1_cur), '-', num2str(t2_cur), '.txt']);
     end
 end

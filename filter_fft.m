@@ -8,4 +8,4 @@ function sig_filtered = filter_fft(sig, fs, range)
     Y = fft(sig);
     Y = Y.*[mask, mask(end:-1:2)];
     sig_filtered = ifft(Y);
-end
+    

@@ -32,11 +32,12 @@ for k = 1:numel(files)
         E12 = energy_power(qVxyz, 0.5);
         s = svd(E12-mean(E12));  %  сингул€рные числа в пор€дке убывани€
 
+        s = s.^2 * sqrt((1e+4) / size(U, 1) / 4.1868);  %  энерги€, ккал/моль
         plot(ax, s);  %  построение графика
         xlim(ax, [1, 3*n]);
-        title(ax, ['The singular values from their number for file ', files{k}, ' Time ', num2str(t1_cur), '-', num2str(t2_cur)], 'FontSize', 16, 'Interpreter', 'none');
-        xlabel(ax, 'Singular value`s number', 'FontSize', 14);
-        ylabel(ax, 'Singular value', 'FontSize', 14);
+        title(ax, ['«ависимость квадратов сингул€рных чисел от их номера дл€ файла ', files{k}, ' Time ', num2str(t1_cur), '-', num2str(t2_cur)], 'FontSize', 16, 'Interpreter', 'none');
+        xlabel(ax, 'Ќомер числа', 'FontSize', 14);
+        ylabel(ax, ' вадрат сингул€рного числа, пересчитанный в ккал/моль', 'FontSize', 14);
         %saveas(fig, [output_path, '√рафик SVD дл€ ', files{k}, ' ', num2str(t1_cur), '-', num2str(t2_cur), '.jpg']);
         %writematrix(s, [output_path, '„исла SVD дл€ ', files{k}, ' ', num2str(t1_cur), '-', num2str(t2_cur), '.txt'], 'Delimiter', 'space');  %  запись сингул€рных значений в текстовый файл
     end

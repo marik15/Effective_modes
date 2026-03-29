@@ -1,4 +1,4 @@
-% Анализируем начало траектории
+%  Анализируем начало траектории
 
 clearvars;
 close all;
@@ -53,7 +53,8 @@ for file_id = 1:numel(files)
         T = E12;  %  .*E12;
         [U, S, V] = svd(T-mean(T), 0);
         output_filename = append(output_path_fft, name, '\');
-        plot_fft_U2(t_U, t_s, labels(1:k), U, fs, xlimit, t1_cur-1, diag(S), k_arr, output_filename);
+        s = diag(S).^2 * sqrt((1e+4) / size(U, 1) / 4.1868);  %  энергия, ккал/моль;
+        plot_fft_U2(t_U, t_s, labels(1:k), U, fs, xlimit, t1_cur-1, s, k_arr, output_filename);
     end
     saveas(fig, append(path_output, 'U Start ', name, '.png'));
     saveas(fig2, append(path_output, 'Spectra Start ', name, '.png'));

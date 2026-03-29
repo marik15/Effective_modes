@@ -106,7 +106,7 @@ for files_id = 1:size(files_group, 1)  %  [1:11, 13, 15:16, 18]  %  1:size(files
             E12_full = energy_power(qVxyz_full(t, :), 0.5);
             T = E12_full;
             [U, S, V] = svd(T, 0);
-            s = diag(S)*sqrt((1e+4)/size(U, 1)/4.1868);  %  энергия, ккал/моль
+            s = diag(S).^2 * sqrt((1e+4) / size(U, 1) / 4.1868);  %  энергия, ккал/моль
             sing(time_id, :) = s';
             n_eff = find(cumsum(s)/sum(s) >= threshold - (1e-10), 1);
             for mode = 1:n_eff
@@ -119,10 +119,10 @@ for files_id = 1:size(files_group, 1)  %  [1:11, 13, 15:16, 18]  %  1:size(files
                     interpolant = interp1(freq, idx(row, :).*P1, freqs_int{row});
                     integral(row) = trapz([freqs_int{row}(1) - dx, freqs_int{row}, freqs_int{row}(end) + dx], [0, interpolant, 0], 2);
                 end
-                arr(time_id, :) = arr(time_id, :) + (s(mode)^2)*integral/sum(integral);  %  нормировка на квадрат сингулярного числа
+                arr(time_id, :) = arr(time_id, :) + s(mode) * integral / sum(integral);  %  нормировка на квадрат сингулярного числа
             end
             %  arr(time_id, :) = arr(time_id, :)/sum(arr(time_id, :));
-            %  arr_sum(time_id) = sum(s.^2);
+            %  arr_sum(time_id) = sum(s);
     
             for mode = 1:3*n
                 [freq, P1] = fourier_transform(U(:, mode)', fs);

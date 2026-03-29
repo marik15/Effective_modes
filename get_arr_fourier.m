@@ -1,4 +1,4 @@
-    %  Вычисляет массив сумм под кривой Фурье-спектра по нескольким областям от времени на одном графике
+%  Вычисляет массив сумм под кривой Фурье-спектра по нескольким областям от времени на одном графике
 %  arr = {r, a, b}
 
 function [arr, fs, range, n_eff_arr, frac, freq, fourier_coeffs_arr, freqs_int] = get_arr_fourier(path_aux, filename, step, is_min)
@@ -86,7 +86,7 @@ function [arr, fs, range, n_eff_arr, frac, freq, fourier_coeffs_arr, freqs_int] 
         E12_full = energy_power(qVxyz_full(t, :), 0.5);
         T = E12_full;
         [U, S, ~] = svd(T, 0);
-        s = diag(S) * sqrt((1e+4) / size(U, 1) / 4.1868);  %  энергия, ккал/моль
+        s = diag(S).^2 * sqrt((1e+4) / size(U, 1) / 4.1868);  %  энергия, ккал/моль
         n_eff = find(cumsum(s)/sum(s) >= threshold - (1e-10), 1);
         n_eff_arr(time_id) = n_eff;
         for mode_id = 1:size(U, 2)
@@ -103,7 +103,7 @@ function [arr, fs, range, n_eff_arr, frac, freq, fourier_coeffs_arr, freqs_int] 
                 integral(row) = trapz([freqs_int{row}(1) - dx, freqs_int{row}, freqs_int{row}(end) + dx], [0, interpolant, 0], 2);
             end
             integral_total = trapz(freq(freq <= upper_limit), fourier_coeffs(freq <= upper_limit), 2);
-            arr(time_id, :) = arr(time_id, :) + (s(mode_id)^2) * integral / integral_total;  %  добавление весов квадратов сингулярных чисел
+            arr(time_id, :) = arr(time_id, :) + s(mode_id) * integral / integral_total;  %  добавление весов квадратов сингулярных чисел
             frac(mode_id, time_id, :) = integral/integral_total;
         end
     end

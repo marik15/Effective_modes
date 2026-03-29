@@ -1,4 +1,4 @@
-% Суммирует взвешенные вейвлет-спектры, и сохраняет их в файл
+%  Суммирует взвешенные вейвлет-спектры, и сохраняет их в файл
 
 path_data = 'C:\MATLAB\Эффективные моды\';  %  папка с файлами
 files = {'w4_2.irc'};  %  файлы
@@ -48,7 +48,7 @@ for file_id = 1:numel(files)
 
             wavelet_sum = sum(cfs, 2);
             graph_sum_wavelet{mode_id, t} = [flipud(frq), flipud(wavelet_sum)];
-            s{t} = diag(S).^(2);
+            s{t} = diag(S).^(2) * sqrt((1e+4) / size(U, 1) / 4.1868);  %  энергия, ккал/моль;
         end
     end
 
@@ -60,8 +60,8 @@ for file_id = 1:numel(files)
         sum_fft = zeros(t, size(graph_sum_fft{modes(1), t}(:, 2), 1));
         sum_wv = zeros(t, size(graph_sum_wavelet{modes(1), t}(:, 2), 1));
         for mode_id = modes
-            sum_wv(t, :) = sum_wv(t, :) + s{t}(mode_id)*graph_sum_wavelet{mode_id, t}(:, 2)';
-            sum_fft(t, :) = sum_fft(t, :) + s{t}(mode_id)*graph_sum_fft{mode_id, t}(:, 2)';
+            sum_wv(t, :) = sum_wv(t, :) + s{t}(mode_id) * graph_sum_wavelet{mode_id, t}(:, 2)';
+            sum_fft(t, :) = sum_fft(t, :) + s{t}(mode_id) * graph_sum_fft{mode_id, t}(:, 2)';
         end
         
         fig_fft = figure('units', 'normalized', 'outerposition', [0, 0, 1, 1], 'color', 'w');

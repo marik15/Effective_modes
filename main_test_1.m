@@ -37,4 +37,5 @@ T = E12;  %  .*E12;
 
 j = 1;
 k_arr = 1:size(U, 2);
-[fig, fig2] = plot_wavelets_U(U, fs, xlimit, 0, diag(S), k_arr);
+s = s * sqrt((1e+4) / size(U, 1) / 4.1868);  %  энергия, ккал/моль
+[fig, fig2] = plot_wavelets_U(U, fs, xlimit, 0, s, k_arr);

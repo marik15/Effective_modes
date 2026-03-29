@@ -46,7 +46,8 @@ for file_id = 1:numel(files)
             k_arr = size(U, 2)/num_pages*(j-1)+1:size(U, 2)/num_pages*j;
             %filename_video = append(output_path, name, ' video U for E12 Time ', num2str(t1_cur), '-', num2str(t2_cur), ' modes ', num2str(k_arr(1)), '-', num2str(k_arr(end)), '.mp4');
             %record_video_main_filter(U, fs, t1, diag(S), k_arr, filename_video, L_video, step_video);
-            [fig, fig2] = plot_fft_wavelets_U(U, fs, xlimit, t1_cur-1, diag(S), k_arr, k_mean);
+            s = diag(S).^2 * sqrt((1e+4) / size(U, 1) / 4.1868);  %  энергия, ккал/моль
+            [fig, fig2] = plot_fft_wavelets_U(U, fs, xlimit, t1_cur-1, s, k_arr, k_mean);
             saveas(fig, append(output_path, name, ' U for E12 Time ', num2str(t1_cur), '-', num2str(t2_cur), ' modes ', num2str(k_arr(1)), '-', num2str(k_arr(end)), '.png'));
             saveas(fig2, append(output_path, name, ' spectra for E12 Time ', num2str(t1_cur), '-', num2str(t2_cur), ' modes ', num2str(k_arr(1)), '-', num2str(k_arr(end)), '.png'));
             close([fig, fig2]);
