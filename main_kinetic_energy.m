@@ -1,23 +1,13 @@
 % Считывает среднюю кинетическую энергию, указанную в шапке .irc-файла
 
 path_data = 'D:\MATLAB\Эффективные моды\data\';  %  папка с файлами, в конце символ \
-files = {%'w4_1b.irc';
-         %'w4_2.irc';
-         %'w3_3.irc';
-         'extract.irc';
-         %'w8_5.irc';
-         %'w8_6.irc';
-         %'w8_7.irc';
-         %'w5_1a.irc';
-         };  %  названия файлов
+files = {'w3_1.irc'};  %  названия файлов
 
 t1 = 1;  %  начиная с какого отсчёта по времени усреднять
 t2 = 5001;  %  последний отсчёт по времени
 t_step = 5000;  %  шаг, отсчеты
 
 % --- ниже не нужно редактировать
-
-const = 2;  %  толщина граничных линий на графике
 
 output_path = [path_data, 'Kinetic Energy\'];
 if (~isfolder(output_path))
@@ -32,8 +22,9 @@ box(ax, 'on');
 
 xlabel(ax, 'Время, номер отсчета');
 ylabel(ax, 'Кинетическая энергия');
-ax.GridLineWidth = const;
-ax.LineWidth = const;
+%const = 2;  %  толщина граничных линий на графике
+%ax.GridLineWidth = const;
+%ax.LineWidth = const;
 
 for k = 1:numel(files)
     filename = [path_data, files{k}];
@@ -50,8 +41,8 @@ for k = 1:numel(files)
             [~] = fgetl(file);
         end
         line = fgetl(file);
+        line = line(11:end);  %  убираем значение TIME (иногда они звездочки)
         values = str2num(line);  %#ok<ST2NM>
-        values(1) = [];
         energy(t, 1) = values(1);  %  энергия из строчки
         for j = 1:n+2
             [~] = fgetl(file);
@@ -70,7 +61,7 @@ for k = 1:numel(files)
         plot(ax, [t1_cur, t2_cur], [m, m], 'r');
         set(ax, 'FontSize', 40);
         
-        %saveas(fig, [output_path, 'Kinetic Energy ', name, ' ', num2str(t1_cur), '-', num2str(t2_cur), '.jpg']);
+        saveas(fig, [output_path, 'Kinetic Energy ', name, ' ', num2str(t1_cur), '-', num2str(t2_cur), '.jpg']);
 
         %file2 = fopen([output_path, 'Kinetic Energy ', name, ' ', num2str(t1_cur), '-', num2str(t2_cur), '.dat'], 'w');
         %for i = t1_cur:t2_cur
@@ -80,6 +71,6 @@ for k = 1:numel(files)
     end
 end
 
-%close(fig);
+close(fig);
 
-%fprintf('\t%s\n\t%s\n\t%s\n', datestr(datetime(now, 'ConvertFrom', 'datenum')), 'Файлы с кинетической энергией успешно записаны по адресу:', output_path);
+fprintf('\t%s\n\t%s\n\t%s\n', string(datetime('now')), 'Файлы с кинетической энергией успешно записаны по адресу:', output_path);

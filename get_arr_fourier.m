@@ -85,7 +85,7 @@ function [arr, fs, range, n_eff_arr, frac, freq, fourier_coeffs_arr, freqs_int] 
         t = fix((1:N_width) + (time_id - 1) * step);
         E12_full = energy_power(qVxyz_full(t, :), 0.5);
         T = E12_full;
-        [U, S, ~] = svd(T, 0);
+        [U, S, ~] = svd(T - mean(T), 0);
         s = diag(S).^2 * sqrt((1e+4) / size(U, 1) / 4.1868);  %  энергия, ккал/моль
         n_eff = find(cumsum(s)/sum(s) >= threshold - (1e-10), 1);
         n_eff_arr(time_id) = n_eff;
@@ -103,7 +103,7 @@ function [arr, fs, range, n_eff_arr, frac, freq, fourier_coeffs_arr, freqs_int] 
                 integral(row) = trapz([freqs_int{row}(1) - dx, freqs_int{row}, freqs_int{row}(end) + dx], [0, interpolant, 0], 2);
             end
             integral_total = trapz(freq(freq <= upper_limit), fourier_coeffs(freq <= upper_limit), 2);
-            arr(time_id, :) = arr(time_id, :) + s(mode_id) * integral / integral_total;  %  добавление весов квадратов сингулярных чисел
+            arr(time_id, :) = arr(time_id, :) + s(mode_id) * integral / integral_total;  %  добавление весов
             frac(mode_id, time_id, :) = integral/integral_total;
         end
     end

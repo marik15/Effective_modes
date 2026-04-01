@@ -96,7 +96,7 @@ function [arr, fs, range, n_eff_arr, frac] = get_arr(path_aux, filename, step, i
                 integral(row) = trapz([freqs_int{row}(1) - dx, freqs_int{row}, freqs_int{row}(end) + dx], [0, interpolant, 0], 2);
             end
             integral_total = trapz(freq, fourier_coeffs, 2);
-            arr(time_id, :) = arr(time_id, :) + s(mode_id) * integral / integral_total;  %  нормировка на квадрат сингулярного числа
+            arr(time_id, :) = arr(time_id, :) + s(mode_id) * integral / integral_total;  %  нормировка
             frac(mode_id, time_id, :) = integral/integral_total;
         end
     end
