@@ -39,7 +39,7 @@ for series = 1:numel(origs)
         sigma(file_id, :) = s;
         for mode_id = 1:size(sigma, 2)
             [freq, P1] = fourier_transform(U(:, mode_id)', fs);
-            freq = freq/(3e+10);
+            freq = freq / 3e+10;
             idx = (freq <= freq_upper_limit);
             main_freq = get_main_freq(freq(idx), P1(idx));
             freqs(file_id, mode_id) = main_freq;

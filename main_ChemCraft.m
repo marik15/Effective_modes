@@ -9,6 +9,9 @@ t_step = 5000;  %  шаг, отсчеты
 
 % Ниже не редактировать
 
+const = 0.529177;  %  коэффициент перевода ангстремы в боры
+k_kkal_mole = 627.5095;  %  коэффициент перевода а.е.м. * (бор/фс)^2 в ккал/моль: E = 0.5 * k * m * V^2;
+
 sample = [cd, '\wx.sample'];
 
 for file_id = 1:numel(files)
@@ -42,7 +45,7 @@ for file_id = 1:numel(files)
             mkdir(output_path);
         end
 
-        s = diag(S).^2 * sqrt((1e+4) / size(U, 1) / 4.1868);  %  энергия, ккал/моль
+        s = diag(S).^2 / size(U, 1) * k_kkal_mole / (const^2);  %  энергия, ккал/моль
         write_wx_for_visualizer(sample, q, xyz, n, U, s, V, fs, [output_path, 'output ', num2str(t1_cur), '-', num2str(t2_cur), '.txt']);
     end
 end

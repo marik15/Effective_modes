@@ -38,6 +38,9 @@ files = dir(append(path_aux, '*.mat'));
 
 dx = 5;  %  шаг по частоте
 
+const = 0.529177;  %  коэффициент перевода ангстремы в боры
+k_kkal_mole = 627.5095;  %  коэффициент перевода а.е.м. * (бор/фс)^2 в ккал/моль: E = 0.5 * k * m * V^2;
+
 for file_id = 1:numel(files)
     switch files(file_id).name(2)
         case '3'
@@ -68,12 +71,11 @@ for file_id = 1:numel(files)
         E12_full = energy_power(qVxyz_full(t, :), 0.5);
         T = E12_full;
         [U, S, V] = svd(T, 0);
-        s = diag(S).^2 * sqrt((1e+4) / size(U, 1) / 4.1868);  %  энергия, ккал/моль
-        %sing(time_id, :) = s';
+        s = diag(S).^2 / size(U, 1) * k_kkal_mole / (const^2);  %  энергия, ккал/моль
         n_eff = find(cumsum(s)/sum(s) >= threshold - (1e-10), 1);
         for mode = 1:n_eff
             [freq, P1] = fourier_transform(U(:, mode)', fs);
-            freq = freq/3E+10;
+            freq = freq / 3e+10;
             idx = zeros(4, size(freq, 2), 'logical');
             integral = zeros(1, 3);
             idx(1, :) = ((range(1, 1) <= freq) & (freq < range(1, 2)));
@@ -92,7 +94,7 @@ for file_id = 1:numel(files)
 
         for mode = 1:3*n
             [freq, P1] = fourier_transform(U(:, mode)', fs);
-            freq = freq/3E+10;
+            freq = freq / 3e+10;
             max_fft_frq(time_id, mode) = get_main_freq(freq, P1);
         end
 

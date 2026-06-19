@@ -61,7 +61,7 @@ for files_id = 1:numel(files)
         title(ax_fourier, append(files(files_id).name(1:end-4), ' мода ', num2str(mode_id), '/', num2str(size(frac, 1)), ', доли вклада в энергию каждой области (доли площадей под графиком Фурье)'), 'Interpreter', 'None');
         output_video = VideoWriter(append(path_output, files(files_id).name(1:end-4), ' мода ', num2str(mode_id), ' из ', num2str(size(frac, 1)), '.mp4'), 'MPEG-4');  %  создание видео
         output_video.FrameRate = 5;  %  кадров в секунду
-        open(output_video)
+        open(output_video);
         for time_id = 1:size(fourier_coeffs_arr, 2)
             if exist('l1', 'var')
                 set(l1, 'XData', t([time_id, time_id]), 'YData', ylim_arr);

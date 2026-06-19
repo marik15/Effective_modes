@@ -70,7 +70,7 @@ for file_id = 1:numel(files)
             ylabel(ax_signal, 'Values of the vector`s components', 'FontSize', 14);
 
             [freq, P1] = fourier_transform(U(x, mode_id)', fs);
-            freq = freq/3E+10;
+            freq = freq / 3e+10;
             max_fft_frq = get_main_freq(freq, P1);
             plot(ax_fft, freq, P1);
             xlim(ax_fft, [0, xlimit]);

@@ -87,7 +87,7 @@ function write_wx_for_visualizer(sample, q, xyz, n, U, s, V, fs, output_file)
             [freq, fourier_coeffs] = fourier_transform(U(:, mode+i-1)', fs);
             freqs(1, i) = get_main_freq(freq, fourier_coeffs);
         end
-        freqs = freqs/3E+10;  %  частота в обратных сантиметрах
+        freqs = freqs / 3e+10;  %  частота в обратных сантиметрах
         fprintf(file2, ['       FREQUENCY:   ', sprintf(format_fr, freqs), '\n']);  %  FREQUENCY
         fprintf(file2, [REDUCED_MASS(1:18+12*L), '\n']);
         fprintf(file2, ['    IR INTENSITY: ', sprintf(format_ir, s(mode:mode+L-1)), '\n']);

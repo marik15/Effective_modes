@@ -9,9 +9,10 @@ files_group = {'w5_2a.mat', 'w5_2a_1.mat', 'w5_2a_2.mat'};
 file_id = 1;  %  какой файл
 step = 500;  %  по сколько отсчетов шагаем
 
-[arr, fs, ~] = get_arr(path_aux, files_group, file_id, step);
+%[arr, fs, ~] = get_arr(path_aux, files_group, file_id, step);
+[arr, fs, ~, ~, ~] = get_arr(path_aux, files_group{file_id}, step, false);
 E_kin_rab = get_initial_data('D:\MATLAB\Эффективные моды\initial_data.xlsx', files_group{file_id}(1:end-4));
-n = size(arr, 2);
+n = size(arr, 2);  %  проверить
 N = [2*n, max(n - 6 - 3*n, 3), n];  %  r, a, b
 
 x0 = abs(randn(1, 5*sum(N) + 6));

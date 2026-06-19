@@ -33,7 +33,7 @@ for series = 1:numel(origs)
         sigma(file_id, :) = s;
         for mode_id = 1:size(sigma, 2)
             [freq, P1] = fourier_transform(U(:, mode_id)', fs);
-            freq = freq/(3e+10);
+            freq = freq / 3e+10;
             freqs(file_id, mode_id) = get_main_freq(freq, P1);
 
             fig_fft = figure('units', 'normalized', 'outerposition', [0, 0, 1, 1], 'color', 'w');

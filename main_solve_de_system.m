@@ -4,21 +4,20 @@ clearvars;
 close all;
 clc;
 
-needed_names = {'w3_2a_2'};
-%  {'w3_2a'; 'w3_2a_1'; 'w3_2a_2'; 'w3_3a'; 'w3_3a_1'; 'w3_3a_2'; 'w3_4a'; 'w4_1b'; 'w4_1b_1'; 'w4_2_1'};
+needed_names = {'w3_2a'; 'w3_2a_1'; 'w3_2a_2'; 'w3_3a'; 'w3_3a_1'; 'w3_3a_2'; 'w3_4a'; 'w4_1b'; 'w4_1b_1'; 'w4_2_1'};
 
-path_aux = 'D:\MATLAB\Эффективные моды\Вспомогательные файлы\';
+path_data = 'D:\MATLAB\Эффективные моды\Вспомогательные файлы\';
 
 step = 500;  %  по сколько отсчетов шагаем
 temp = 'Result add 9_vars 6 order step ';
-const = 3e4;
+const = 3e4;  %  число точек при аппроксимации решения
 N = 100;  %  число начальных приближений
 top = 5;
 lb = zeros(1, 9);
 %lb = zeros(1, 6);
 options = optimoptions('fmincon', 'Display', 'none', 'MaxIterations', 5e+2, 'MaxFunctionEvaluations', 2e+4);  %  'OutputFcn', @myoutputfcn, 
 
-d = dir(path_aux);
+d = dir(path_data);
 d([d.isdir]) = [];  %  remove . and .. and all subpaths
 names = {d.name}';
 for idx = 1:numel(names)
@@ -36,7 +35,7 @@ for file_id = 1:numel(names)  %  диапазон файлов
         done = done + 1;
         fprintf(1, 'Файл %d/%d\t(%d/%d\t%.2f-%.2f%%):\t%s\n', file_id, numel(names), done, numel(needed_names), 100 * (done - 1)/numel(needed_names), 100 * done/numel(needed_names), names{file_id});
         tic;
-        [arr, fs, ~, n_eff_arr] = get_arr(path_aux, append(names{file_id}, '.mat'), step, false);
+        [arr, fs, ~, n_eff_arr, ~] = get_arr(path_data, append(names{file_id}, '.mat'), step, false);
         t = (0:(size(arr, 1) - 1)) * step / (fs * (1e-12));  %  время, мс
 
         k_best{file_id} = zeros(top, 6);

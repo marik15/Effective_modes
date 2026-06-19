@@ -1,4 +1,4 @@
-%  Считывает данные из .irc-файла и сохраняет их в бинарный файл, чтобы ускорить последующие запуски
+%  Считывает данные filename из .irc-файла и сохраняет их в бинарный файл в path_output, чтобы ускорить последующие запуски
 
 function [n, qVxyz_full, xyz_full, fs] = load_n_qVxyz_xyz_fs(path_output, filename)
     [~, name, ~] = fileparts(filename);

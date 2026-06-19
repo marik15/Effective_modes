@@ -39,7 +39,7 @@ for file_id = 1:numel(files)
             [U, S, ~] = svd(E12 - mean(E12), 0);
 
             [freq, P1] = fourier_transform(U(:, mode_id)', fs);
-            freq = freq/3E+10;
+            freq = freq / 3e+10;
             graph_sum_fft{mode_id, t} = [freq; P1]';
 
             [cfs, frq] = cwt(U(:, mode_id), fs);

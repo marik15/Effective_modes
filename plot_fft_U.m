@@ -16,7 +16,7 @@ function [fig, fig2] = plot_fft_U(U, fs, xlimit, t1, s, k_arr)
 
         ax_s = nexttile(t_s);
         [freq, P1] = fourier_transform(U(:, mode_id)', fs);
-        freq = freq/3E+10;  %  перевод в обратные см
+        freq = freq / 3e+10;  %  перевод в обратные см
         plot(ax_s, freq, P1, 'LineWidth', 1);
         xlim(ax_s, xlimit*[-0.01, 1]);
         title(ax_s, append('\lambda_{', num2str(mode_id), '} = ', num2str(s(mode_id))));
