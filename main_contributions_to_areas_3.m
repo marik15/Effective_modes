@@ -38,7 +38,6 @@ files = dir(append(path_aux, '*.mat'));
 
 dx = 5;  %  шаг по частоте
 
-const = 0.529177;  %  коэффициент перевода ангстремы в боры
 k_kkal_mole = 627.5095;  %  коэффициент перевода а.е.м. * (бор/фс)^2 в ккал/моль: E = 0.5 * k * m * V^2;
 
 for file_id = 1:numel(files)
@@ -71,9 +70,9 @@ for file_id = 1:numel(files)
         E12_full = energy_power(qVxyz_full(t, :), 0.5);
         T = E12_full;
         [U, S, V] = svd(T, 0);
-        s = diag(S).^2 / size(U, 1) * k_kkal_mole / (const^2);  %  энергия, ккал/моль
-        n_eff = find(cumsum(s)/sum(s) >= threshold - (1e-10), 1);
-        for mode = 1:n_eff
+        s = diag(S).^2 / size(U, 1) * k_kkal_mole;  %  энергия, ккал/моль
+        N_eff = count_N_eff(s);
+        for mode = 1:N_eff
             [freq, P1] = fourier_transform(U(:, mode)', fs);
             freq = freq / 3e+10;
             idx = zeros(4, size(freq, 2), 'logical');

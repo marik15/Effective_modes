@@ -1,9 +1,9 @@
 %  Вычисляет массив сумм под кривой Фурье-спектра по нескольким областям от времени на одном графике
 
 function [arr, fs, range, n_eff_arr, frac] = get_arr(path_aux, filename, step, is_min)
-    threshold = 0.5;  %  доля энергии
     dx = 5;  %  шаг интегрирования по частоте
     T_width = 0.5e-12;  %  ширина скользящего окна, секунды
+    k_kkal_mole = 627.5095;  %  коэффициент перевода а.е.м. * (бор/фс)^2 в ккал/моль: E = 0.5 * k * m * V^2;
 
     range_3 = [0, 225
                225, 330;
@@ -81,10 +81,10 @@ function [arr, fs, range, n_eff_arr, frac] = get_arr(path_aux, filename, step, i
         E12_full = energy_power(qVxyz_full(t, :), 0.5);
         T = E12_full;
         [U, S, ~] = svd(T, 0);
-        s = diag(S).^2 * sqrt((1e+4) / size(U, 1) / 4.1868);  %  энергия, ккал/моль
-        n_eff = find(cumsum(s)/sum(s) >= threshold - (1e-10), 1);
-        n_eff_arr(time_id) = n_eff;
-        for mode_id = 1:n_eff
+        s = diag(S).^2 / size(U, 1) * k_kkal_mole;  %  энергия, ккал/моль
+        N_eff = count_N_eff(s);
+        n_eff_arr(time_id) = N_eff;
+        for mode_id = 1:N_eff
         %for mode_id = (n_eff+1):size(U, 2)
             [freq, fourier_coeffs] = fourier_transform(U(:, mode_id)', fs);
             freq = freq / 3e+10;

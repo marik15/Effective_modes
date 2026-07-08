@@ -10,6 +10,8 @@ path_fft = 'E:\MATLAB\Эффективные моды\Фурье\h2 txt\';
 
 freq_upper_limit = 1e+4;  %  наибольшая частота, см^{-1}
 
+k_kkal_mole = 627.5095;  %  коэффициент перевода а.е.м. * (бор/фс)^2 в ккал/моль: E = 0.5 * k * m * V^2;
+
 %if (~isfolder(sigma_path))
 %    mkdir(sigma_path);
 %end
@@ -27,7 +29,7 @@ for file_id = 7  %  1:numel(files)
     E12_full = energy_power(qVxyz_full, 0.5);
     T = E12_full;
     [U, S, V] = svd(T - mean(T), 0);  %  optional
-    s = (diag(S)').^2 * sqrt((1e+4) / size(U, 1) / 4.1868);  %  энергия, ккал/моль;  %  энергия, ккал/моль
+    s = (diag(S)').^2 / size(U, 1) * k_kkal_mole;  %  энергия, ккал/моль
     sigma = s;
     freqs = zeros(1, size(sigma, 2));
     %file_fft = fopen(append(path_fft, 'Фурье ', files(file_id).name, '.txt'), 'w');

@@ -23,7 +23,6 @@ widths = [1:10, 12:2:20, 25:5:50, 60:10:100, 150:50:500, 600:100:1000, 1200:200:
 
 % --- ниже не нужно редактировать
 
-const = 0.529177;  %  коэффициент перевода ангстремы в боры
 k_kkal_mole = 669.2841158284926;  %  коэффициент перевода а.е.м. * (бор/фс)^2 в ккал/моль: E = 0.5 * k * m * V^2;
 k_kkal_mole_header = 627.5095;
 
@@ -40,10 +39,6 @@ box(ax, 'on');
 
 xlabel(ax, 'Время, пс');
 ylabel(ax, 'Кинетическая энергия, ккал/моль');
-%ax.YScale = 'log';
-%const = 2;  %  толщина граничных линий на графике
-%ax.GridLineWidth = const;
-%ax.LineWidth = const;
 
 for file_id = 1:numel(files)
     filename = [path_data, files{file_id}];
@@ -83,7 +78,7 @@ for file_id = 1:numel(files)
     for t = t1:t2
         for atom = 1:size(qVxyz_full, 2)/4
             m = mass_by_charge(qVxyz_full(t, 4 * atom - 3));
-            V = norm(qVxyz_full(t, (4 * atom - 2):(4 * atom)) / const);  %  переводим в боры
+            V = norm(qVxyz_full(t, (4 * atom - 2):(4 * atom)));  %  переводим в боры
             E_k_formula(t) = E_k_formula(t) + 0.5 * m * (V^2) * k_kkal_mole;
         end
     end
@@ -99,7 +94,7 @@ for file_id = 1:numel(files)
         for t = t_range_svd
             time_svd = round(t + (fix(- 0.5 * width_svd):(ceil(0.5 * width_svd) - 1)));  %  диапазон времени для svd
             s = svd(E12(time_svd, :));
-            E_kin_svd(t) = sum(s.^2) / numel(time_svd) * k_kkal_mole / (const^2);
+            E_kin_svd(t) = sum(s.^2) / numel(time_svd) * k_kkal_mole;
         end
     
         cla(ax);

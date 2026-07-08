@@ -11,11 +11,14 @@ files = {'w3_1a.irc';
          'w3_3a_1.irc';
          'w3_3a_2.irc';
          'w3_4a.irc'};  %  имена файлов
+
 t_step = 100000;  %  шаг, отсчеты
 t1 = 1;  %  начало траектории
 t2 = 'end';  % конец траектории: целое число, либо слово 'end', если нужно посчитать до конца файла, а число строк неизвестно
 
 % --- ниже не нужно редактировать
+
+k_kkal_mole = 627.5095;  %  коэффициент перевода а.е.м. * (бор/фс)^2 в ккал/моль: E = 0.5 * k * m * V^2;
 
 output_path = [path_data, '—ингул€рные числа\'];
 if (~isfolder(output_path))
@@ -43,15 +46,19 @@ for k = 1:numel(files)
 
         qVxyz = qVxyz_full(t1_cur:t2_cur, :);
         E12 = energy_power(qVxyz, 0.5);
-        s = svd(E12 - mean(E12), 0);  %  сингул€рные числа в пор€дке убывани€
+        s = svd(E12 - mean(E12), 0);  %  сингул€рные числа в пор€дке невозрастани€
 
-        s = s.^2 * sqrt((1e+4) / size(E12, 1) / 4.1868);  %  энерги€, ккал/моль
+        s = s.^2 / size(E12, 1) * k_kkal_mole;  %  энерги€, ккал/моль
+        N_eff = count_N_eff(s);
         plot(ax, s, 'LineWidth', 2, 'Marker', 'square');  %  построение графика
+        line(ax, [N_eff, N_eff], [0, s(1)], 'LineWidth', 2);
+        text(ax, N_eff, s(1), sprintf('N_{eff} = %.2f', N_eff), 'FontSize', 40, 'BackgroundColor', 'none', 'EdgeColor', 'none', 'Margin', 8, 'VerticalAlignment', 'middle');
         xlim(ax, [1, 3 * n]);
+        fname = strrep(files{k}, '_', '\_');
+        title(ax, ['$\sigma_{k}^2$ for ', fname, ' time frames: ', num2str(t1_cur), '-', num2str(t2_cur)], 'Interpreter', 'latex');
+        xlabel(ax, 'k');
+        ylabel(ax, '\sigma_k^2, ккал/моль', 'Interpreter', 'tex');
         set(ax, 'FontSize', 40);
-        title(ax, ['«ависимость квадратов сингул€рных чисел от их номера дл€ файла ', files{k}, ' ќтсчеты: ', num2str(t1_cur), '-', num2str(t2_cur)], 'FontSize', 24, 'Interpreter', 'none');
-        xlabel(ax, 'Ќомер числа', 'FontSize', 24);
-        ylabel(ax, ' вадрат сингул€рного числа, пересчитанный в ккал/моль', 'FontSize', 24);
         saveas(fig, [output_path, '√рафик SVD дл€ ', files{k}, ' ', num2str(t1_cur), '-', num2str(t2_cur), '.png']);
         writematrix(s, [output_path, '„исла SVD дл€ ', files{k}, ' ', num2str(t1_cur), '-', num2str(t2_cur), '.txt'], 'Delimiter', 'space');  %  запись сингул€рных значений в текстовый файл
     end
@@ -59,4 +66,4 @@ end
 
 close(fig);
 
-fprintf('\t%s\n\t%s\n\t%s\n', string(datetime('now')), '‘айлы с сингул€рными числами успешно записаны по адресу:', output_path);
+fprintf('\t%s\n\t%s\n\t%s\n', string(datetime('now')), '‘айлы с сингул€рными числами записаны по адресу:', output_path);

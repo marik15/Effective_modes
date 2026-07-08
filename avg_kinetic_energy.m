@@ -15,6 +15,8 @@ t2 = 10000;  %  последний отсчёт по времени
 
 % --- ниже не нужно редактировать
 
+k_kkal_mole = 627.5095;  %  коэффициент перевода а.е.м. * (бор/фс)^2 в ккал/моль: E = 0.5 * k * m * V^2;
+
 for file_id = 9  %  1:numel(files)
     filename = append(path_data, files(file_id).name(1:end-4), '.irc');
     [~, name, ~] = fileparts(filename);
@@ -49,6 +51,8 @@ for file_id = 9  %  1:numel(files)
     for int_id = 1:N_T
         avg_energy(int_id) = mean(energy(t1 + w * (int_id - 1):t1 + w * int_id - 1));
     end
+
+    avg_energy = avg_energy * k_kkal_mole;  %  энергия, ккал/моль
 
     fig = figure('units', 'normalized', 'outerposition', [0, 0, 1, 1], 'color', 'w');
     ax = axes(fig);  %#ok<LAXES>

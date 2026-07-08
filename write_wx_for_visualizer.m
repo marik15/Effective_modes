@@ -8,14 +8,13 @@ function write_wx_for_visualizer(sample, q, xyz, n, U, s, V, fs, output_file)
         fprintf(file2, [insertAfter(fgetl(file), "%", "%"), '\n']);
     end
     atom_names = repmat({''}, n, 1);
-    const = 0.529177;
     for str_i = 35:46
         line = fgetl(file);  %  пропуск первых 12 строк
     end
     for strout_i = 1:n  %  вставка средних координат в Борах
-        x = mean(xyz(:, 3*strout_i-2))/const;
-        y = mean(xyz(:, 3*strout_i-1))/const;
-        z = mean(xyz(:, 3*strout_i))/const;
+        x = mean(xyz(:, 3*strout_i-2));
+        y = mean(xyz(:, 3*strout_i-1));
+        z = mean(xyz(:, 3*strout_i));
         atom_names{strout_i, 1} = ['a', num2str(strout_i)];
         fprintf(file2, '%3s%13.1f%17.10f%20.10f%20.10f\n', atom_names{strout_i, 1}, q(strout_i), [x, y, z]);
     end
@@ -96,7 +95,7 @@ function write_wx_for_visualizer(sample, q, xyz, n, U, s, V, fs, output_file)
         for atom = 1:n
             for comp = 'X':'Z'
                 if (comp == 'X')
-                    k = length(atom_names{strout_i, 1});
+                    k = length(atom_names{atom, 1});
                     fprintf(file2, ['%3d%3s%', num2str(k), 's%', num2str(13-k), 's'], atom, '', atom_names{atom, 1}, '');
                 else
                     fprintf(file2, '%19s', '');

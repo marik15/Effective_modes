@@ -14,6 +14,8 @@ k_mean = 11;  %  во сколько раз сжать вейвлет-карти
 
 % --- ниже не нужно редактировать
 
+k_kkal_mole = 627.5095;  %  коэффициент перевода а.е.м. * (бор/фс)^2 в ккал/моль: E = 0.5 * k * m * V^2;
+
 for file_id = 1:numel(files)
     filename = [path_data, files{file_id}];
     [filepath, name, ~] = fileparts(filename);
@@ -48,7 +50,7 @@ for file_id = 1:numel(files)
 
             wavelet_sum = sum(cfs, 2);
             graph_sum_wavelet{mode_id, t} = [flipud(frq), flipud(wavelet_sum)];
-            s{t} = diag(S).^(2) * sqrt((1e+4) / size(U, 1) / 4.1868);  %  энергия, ккал/моль;
+            s{t} = diag(S).^(2) / size(U, 1) * k_kkal_mole;  %  энергия, ккал/моль
         end
     end
 

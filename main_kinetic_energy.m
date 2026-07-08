@@ -28,9 +28,6 @@ box(ax, 'on');
 
 xlabel(ax, 'Время, номер отсчета');
 ylabel(ax, 'Кинетическая энергия');
-%const = 2;  %  толщина граничных линий на графике
-%ax.GridLineWidth = const;
-%ax.LineWidth = const;
 
 for k = 1:numel(files)
     filename = [path_data, files{k}];
